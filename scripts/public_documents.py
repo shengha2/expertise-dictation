@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # optional allowlist and is never required by a public-source build.
 DOCUMENTS = (
     "README.md", "MINT.md", "LICENSE", "THIRD_PARTY_NOTICES.md",
-    "docs/rewrite-design.md", "docs/release-1.1.9.md", "docs/LICENSE-Sparkle.txt",
+    "docs/rewrite-design.md", "docs/release-1.1.9.md", "docs/release-1.1.10.md", "docs/LICENSE-Sparkle.txt",
     "Resources/Fonts/LICENSE-Inter.txt", "Resources/Sounds/LICENSE-UI-SFX.txt",
     "Resources/Sounds/SOURCE.md", "prompts/README.md", "prompts/full-rewrite.txt",
     "prompts/light-cleanup.txt", "prompts/punctuation.txt", "prompts/rewrite-verifier.txt",

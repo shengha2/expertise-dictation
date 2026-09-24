@@ -1,6 +1,6 @@
 # Expertise Dictation — usage guide
 
-1.1.9 personal connection guide · macOS 14 or later · Apple silicon and Intel
+1.1.10 personal connection guide · macOS 14 or later · Apple silicon and Intel
 
 **Connection:** This release uses your own provider API key. Existing saved keys carry over; new users add a key in Connection settings. Provider charges apply. The free hosted service is not included. Download a published installer from the [releases page](https://github.com/shengha2/expertise-dictation-releases/releases), and check its release notes and installer receipt for the exact validation and Apple notarization status.
 

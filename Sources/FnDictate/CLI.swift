@@ -667,6 +667,7 @@ enum SelfTest {
         OnboardingRegressionTests.run(check: check)
         HostedServiceRegressionTests.run(check: check)
         ReliabilityRegressionTests.run(check: check)
+        AudioCaptureRegressionTests.run(check: check)
         HotkeyRegressionTests.run(check: check)
         ShortcutPreferenceRegressionTests.run(check: check)
         UpdaterRegressionTests.run(check: check)

@@ -2,7 +2,7 @@
 
 Open-source macOS dictation with a default Fn shortcut, multilingual speech, editable public prompts, and restrained rewriting. Requires macOS 14 or later. It does not use Apple's built-in Dictation.
 
-**The 1.1.9 Mac release uses your own provider API key.** Existing personal connections carry over; new users add their key during setup. Provider charges apply. The free hosted service is deferred and is not included in this release. Published DMGs and their actual release status are in the [release repository](https://github.com/shengha2/expertise-dictation-releases/releases); the [validation report](docs/release-1.1.9.md) records remaining limitations. A source build is not proof of a tested public release.
+**The Mac release uses your own provider API key.** Existing personal connections carry over; new users add their key during setup. Provider charges apply. The free hosted service is deferred and is not included in this release. Published DMGs and their actual release status are in the [release repository](https://github.com/shengha2/expertise-dictation-releases/releases); the [1.1.10 validation report](docs/release-1.1.10.md) covers the first-recording microphone fix, and the [1.1.9 report](docs/release-1.1.9.md) records broader validation and remaining limitations. A source build is not proof of a tested public release.
 
 ## Use it
 
