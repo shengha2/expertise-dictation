@@ -405,7 +405,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         case #selector(pasteLast): return controller.lastInserted != nil || History.shared.last != nil
         case #selector(checkForUpdates):
             item.title = AppUpdater.shared.updateReady ? "Restart to Update…" : "Check for Updates…"
-            return AppUpdater.shared.updateReady ? AppUpdater.shared.canRestartToUpdate : AppUpdater.shared.canCheckForUpdates
+            // Always allow opening the visible update status. The Home action
+            // explains work-in-progress and protects an unsafe restart.
+            return true
         default: return true
         }
     }
@@ -421,9 +423,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
 
     @objc private func openHistory() { showSettings(tab: .history) }
     @MainActor @objc private func checkForUpdates() {
-        refreshUpdateInteractionState()
-        if AppUpdater.shared.updateReady { AppUpdater.shared.restartToUpdate() }
-        else { AppUpdater.shared.checkForUpdates() }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let editingWindow = [self.settingsWindow, self.onboardingWindow]
+                .compactMap { $0 }.first { $0.attachedSheet != nil }
+            let hasDrafts = InlineUpdateDrafts.shared.hasUnsavedChanges
+            if hasDrafts || editingWindow != nil {
+                // Changing tabs destroys SwiftUI draft views. A manual check
+                // must preserve their current tab and any presented editor.
+                NSApp.activate(ignoringOtherApps: true)
+                (editingWindow ?? self.settingsWindow)?.makeKeyAndOrderFront(nil)
+                if AppUpdater.shared.updateReady || editingWindow != nil {
+                    let alert = NSAlert()
+                    alert.messageText = "Finish your edits first"
+                    alert.informativeText = "Save, add or cancel your unfinished edit, then try again. Your changes have been kept."
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
+                    return
+                }
+            } else {
+                self.showSettings(tab: .home)
+            }
+            self.refreshUpdateInteractionState()
+            if AppUpdater.shared.updateReady { AppUpdater.shared.restartToUpdate() }
+            else { AppUpdater.shared.checkForUpdates() }
+        }
     }
     @objc private func openDictionary() { showSettings(tab: .dictionary) }
     @objc private func openHome() { showSettings(tab: .home) }

@@ -70,6 +70,7 @@ func languageSummary(_ codes: [String]) -> String {
 
 struct HomePage: View {
     @ObservedObject private var hostedService = HostedService.shared
+    @ObservedObject private var updater = AppUpdater.shared
     @ObservedObject var controller: DictationController
     let hotkey: HotkeyMonitor
     @EnvironmentObject var settings: Settings
@@ -113,6 +114,7 @@ struct HomePage: View {
                         .font(.hub(13)).foregroundColor(Hub.helper).padding(.top, 6)
                 }
             }
+            updateStatus
             if settings.usesHostedService, hostedService.state != .ready, controller.phase == .idle {
                 HubCard {
                     Text(hostedService.state.message).font(.hub(13)).foregroundColor(Hub.helper)
@@ -218,6 +220,34 @@ struct HomePage: View {
         .onChange(of: controller.phase) { _, phase in
             if phase == .idle || phase == .recording { retryingRecording = false }
         }
+    }
+
+    private var updateStatus: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            HStack(spacing: 12) {
+                Text("Version \(AppUpdater.installedVersion)")
+                    .font(.hub(12, .medium)).foregroundColor(Hub.helper)
+                    .accessibilityIdentifier("home-installed-version")
+                Spacer(minLength: 0)
+                if updater.updateReady {
+                    Button("Restart to update") { updater.restartToUpdate() }
+                        .buttonStyle(PillButtonStyleHub(kind: .secondary, small: true))
+                        .disabled(!updater.canRestartToUpdate)
+                } else {
+                    Button("Check for updates") { updater.checkForUpdates() }
+                        .buttonStyle(PillButtonStyleHub(kind: .secondary, small: true))
+                        .disabled(!updater.canCheckForUpdates)
+                }
+            }
+            Text(updater.statusText)
+                .font(.hub(12)).foregroundColor(Hub.helper)
+                .fixedSize(horizontal: false, vertical: true)
+            if let reason = updater.actionUnavailableReason {
+                Text(reason).font(.hub(12)).foregroundColor(Hub.helper)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.horizontal, 4)
     }
 
     private var selectedRecovery: RecoveryChoice? {
@@ -521,6 +551,10 @@ struct PreferencesPage: View {
                             }
                             Text(updater.statusText).font(.hub(12)).foregroundColor(Hub.helper)
                                 .fixedSize(horizontal: false, vertical: true)
+                            if let reason = updater.actionUnavailableReason {
+                                Text(reason).font(.hub(12)).foregroundColor(Hub.helper)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                             HStack(spacing: 10) {
                                 if updater.updateReady {
                                     Button("Restart to update") { updater.restartToUpdate() }
@@ -760,10 +794,17 @@ struct ConnectionSettings: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             CardTitle(text: "Connection")
-            Picker("Connection", selection: $settings.usesHostedService) {
-                Text("Free service").tag(true)
-                Text("Use my own API key").tag(false)
-            }.pickerStyle(.segmented)
+            if settings.offersHostedService {
+                Picker("Connection", selection: $settings.usesHostedService) {
+                    Text("Free service").tag(true)
+                    Text("Use my own API key").tag(false)
+                }.pickerStyle(.segmented)
+            } else {
+                Text("Use your own API key")
+                    .font(.hub(15, .medium)).foregroundColor(Hub.ink)
+                Text("Add an OpenAI API key below and choose Save. This release connects directly to your provider, which bills usage to your account.")
+                    .font(.hub(13)).foregroundColor(Hub.helper).fixedSize(horizontal: false, vertical: true)
+            }
             if settings.usesHostedService {
                 Text(service.state.message).font(.hub(13)).foregroundColor(Hub.helper)
                     .fixedSize(horizontal: false, vertical: true)

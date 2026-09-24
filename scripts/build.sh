@@ -4,6 +4,8 @@
 #   scripts/build.sh            release build, arm64 + x86_64 universal binary
 #   ARCHS=arm64 scripts/build.sh    faster single-architecture build
 #   DEBUG=1 scripts/build.sh    -Onone build
+#   EXPERTISE_SERVICE_MODE=personal scripts/build.sh  explicit own-API-key flavor
+# Hosted is the default flavor and needs EXPERTISE_SERVICE_URL for distribution.
 #
 # Output: build/Expertise Dictation.app (internal executable remains FnDictate).
 set -euo pipefail

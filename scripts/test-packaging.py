@@ -56,6 +56,7 @@ def main():
         info["SUFeedURL"] = "https://updates.sparkle-project.org/appcast.xml"
         info["SUPublicEDKey"] = base64.b64encode(bytes([42]) * 32).decode()
         info["ExpertiseServiceURL"] = "https://dictation.example.com"
+        info["ExpertiseServiceMode"] = "hosted"
         (app / "Contents/Info.plist").write_bytes(plistlib.dumps(info))
         base = app / "Contents/Frameworks/Sparkle.framework/Versions/B"
         for helper in ("Updater.app", "XPCServices/Installer.xpc", "XPCServices/Downloader.xpc"):
@@ -130,9 +131,16 @@ fi
 [[ ! -e "$image/docs/evidence/fixture/private.json" ]] || exit 11
 [[ ! -e "$image/docs/release-1.1.8.md" ]] || exit 12
 python3 - "$image/Read me first.txt" <<'PY'
-import pathlib, sys
+import os, pathlib, sys
 note = pathlib.Path(sys.argv[1]).read_text()
-assert "guided permissions" in note and "optional personal API-key connection" in note
+assert "guided permissions" in note
+if os.environ["FIXTURE_SERVICE_MODE"] == "personal":
+    assert "personal-connection release" in note and "your own provider API key" in note
+    assert "Provider charges apply" in note and "free hosted service is not included" in note
+elif os.environ["FIXTURE_SERVICE_MODE"] == "hosted":
+    assert "optional personal API-key connection" in note
+else:
+    assert "existing connection settings" in note
 assert "access and an API key" not in note
 PY
 if [[ "$FIXTURE_MODE" == --notarized ]]; then
@@ -152,6 +160,7 @@ fi
         env = dict(os.environ, PATH=str(mocks) + ":" + os.environ["PATH"],
                    BUILD_DIR=str(fixture / "build"), SKIP_BUILD="1")
         env.pop("SIGN_IDENTITY", None)
+        env["EXPERTISE_SERVICE_MODE"] = "hosted"
         inventory = fixture / "documents.txt"
         inventory.write_text("\n".join(str(p.relative_to(fixture)) for p in document_paths(fixture)) + "\n")
         # Exercise the actual source export, not a second hand-written imitation.
@@ -198,6 +207,24 @@ fi
         }
         cases += [(name, mode, "none" if succeeds else "hosted", "missing" if mode == "--notarized" else "configured")
                   for name, (mode, _, _, _, succeeds) in hosted_cases.items()]
+        flavor_cases = {
+            "personal_skip_release": ("--release", "personal", None, "release.sh", "none"),
+            "personal_direct_release": ("--release", "personal", None, "make-dmg.sh", "none"),
+            "personal_manual_release": ("--notarized", "personal", None, "release.sh", "none"),
+            "public_source_personal_release": ("--release", "personal", None, "release.sh", "none"),
+            "personal_notary_failure": ("--release", "personal", None, "release.sh", "notary"),
+            "personal_signature_failure": ("--release", "personal", None, "release.sh", "signature"),
+            "personal_mixed_origin": ("--release", "personal", "https://dictation.example.com", "release.sh", "hosted"),
+            "personal_mixed_empty_origin": ("--release", "personal", "", "make-dmg.sh", "hosted"),
+            "unknown_service_mode": ("--release", "automatic", None, "release.sh", "hosted"),
+            "nonstring_service_mode": ("--release", True, None, "make-dmg.sh", "hosted"),
+            "empty_service_mode": ("--release", "", None, "release.sh", "hosted"),
+            "missing_mode_missing_origin": ("--release", None, None, "release.sh", "hosted"),
+            "missing_mode_valid_origin": ("--release", None, "https://dictation.example.com", "release.sh", "none"),
+            "personal_environment_cannot_override_hosted_bundle": ("--release", "hosted", None, "release.sh", "hosted"),
+        }
+        cases += [(name, mode, failure, "missing" if mode == "--notarized" else "configured")
+                  for name, (mode, _, _, _, failure) in flavor_cases.items()]
         for case, mode, failure, configuration in cases:
             changed = None
             evidence = fixture / "docs/distribution-evidence.txt"
@@ -229,7 +256,13 @@ fi
             case_version = hosted_cases[case][2] if case in hosted_cases else version
             current_info["CFBundleShortVersionString"] = case_version
             current_info["CFBundleVersion"] = case_version
-            service_url = hosted_cases[case][1] if case in hosted_cases else info["ExpertiseServiceURL"]
+            service_url = (flavor_cases[case][2] if case in flavor_cases else
+                           hosted_cases[case][1] if case in hosted_cases else info["ExpertiseServiceURL"])
+            service_mode = flavor_cases[case][1] if case in flavor_cases else "hosted"
+            if service_mode is None:
+                current_info.pop("ExpertiseServiceMode", None)
+            else:
+                current_info["ExpertiseServiceMode"] = service_mode
             if service_url is None or mode == "--local":
                 current_info.pop("ExpertiseServiceURL", None)
             else:
@@ -251,15 +284,18 @@ fi
             (app / "Contents/Info.plist").write_bytes(plistlib.dumps(current_info))
             target = fixture / ("out-" + case)
             call_log = fixture / (case + ".calls")
-            public_source = case in ("public_source", "public_source_release")
+            public_source = case in ("public_source", "public_source_release", "public_source_personal_release")
             runenv = dict(env, DIST_DIR=str(target), FIXTURE_FAILURE=failure,
                           FIXTURE_MODE=mode, FIXTURE_CALL_LOG=str(call_log),
                           FIXTURE_DOCUMENTS=str(export_inventory if public_source else inventory),
                           FIXTURE_EVIDENCE="absent" if public_source or case == "without_operator_evidence" else "present",
                           VERSION=case_version, HOSTED_SERVICE_REQUIRED="0",
+                          FIXTURE_SERVICE_MODE=service_mode if isinstance(service_mode, str) else "legacy",
+                          EXPERTISE_SERVICE_MODE="personal" if case == "personal_environment_cannot_override_hosted_bundle" else "hosted",
                           EXPERTISE_SERVICE_URL="https://environment-cannot-repair-built-app.example.com")
             source_root = exported if public_source else fixture
-            entrypoint = hosted_cases[case][3] if case in hosted_cases else "release.sh"
+            entrypoint = (flavor_cases[case][3] if case in flavor_cases else
+                          hosted_cases[case][3] if case in hosted_cases else "release.sh")
             original_plist = (app / "Contents/Info.plist").read_bytes()
             run = subprocess.run([str(source_root / "scripts" / entrypoint), mode], cwd=source_root,
                                  env=runenv, capture_output=True, text=True)
@@ -274,6 +310,7 @@ fi
                 assert Path(str(finals[0]) + ".sha256").exists()
                 receipt = (target / (name + "-release.txt")).read_text()
                 assert receipt.startswith("Expertise Dictation " + case_version)
+                assert "Service mode: " + runenv["FIXTURE_SERVICE_MODE"] in receipt
                 assert "docs/rewrite-design.md" in receipt and "docs/release-1.1.9.md" in receipt
                 assert "README.md" in receipt and "LICENSE" in receipt and "THIRD_PARTY_NOTICES.md" in receipt
                 assert "docs/release-1.1.8.md" not in receipt
@@ -315,16 +352,21 @@ fi
         build_stub = fixture / "scripts/build.sh"
         build_stub.write_text('#!/bin/bash\nprintf "fixture-build\\n" >> "$FIXTURE_CALL_LOG"\nexit 79\n')
         build_stub.chmod(0o755)
-        for case, mode, requested_version, service_url, reaches_build in (
-            ("hosted_prebuild_missing", "--release", version, "", False),
-            ("hosted_prebuild_unsafe", "--notarized", version, "http://dictation.example.com", False),
-            ("hosted_prebuild_present", "--release", version, "https://dictation.example.com", True),
-            ("hosted_prebuild_legacy", "--release", "1.1.8", "", True),
-            ("hosted_prebuild_local", "--local", version, "", True),
+        for case, mode, requested_version, service_mode, service_url, reaches_build in (
+            ("hosted_prebuild_missing", "--release", version, "hosted", "", False),
+            ("hosted_prebuild_unsafe", "--notarized", version, "hosted", "http://dictation.example.com", False),
+            ("hosted_prebuild_present", "--release", version, "hosted", "https://dictation.example.com", True),
+            ("hosted_prebuild_legacy", "--release", "1.1.8", "hosted", "", True),
+            ("hosted_prebuild_local", "--local", version, "hosted", "", True),
+            ("personal_prebuild_explicit", "--release", version, "personal", "", True),
+            ("personal_prebuild_manual", "--notarized", version, "personal", "", True),
+            ("personal_prebuild_mixed", "--release", version, "personal", "https://dictation.example.com", False),
+            ("personal_prebuild_invalid", "--release", version, "automatic", "", False),
         ):
             call_log = fixture / (case + ".calls")
             runenv = dict(env, SKIP_BUILD="0", VERSION=requested_version, FIXTURE_FAILURE="none",
                           FIXTURE_CALL_LOG=str(call_log), EXPERTISE_SERVICE_URL=service_url,
+                          EXPERTISE_SERVICE_MODE=service_mode,
                           HOSTED_SERVICE_REQUIRED="0", DIST_DIR=str(fixture / ("out-" + case)))
             run = subprocess.run([str(fixture / "scripts/release.sh"), mode], cwd=fixture,
                                  env=runenv, capture_output=True, text=True)
@@ -333,6 +375,36 @@ fi
             assert run.returncode == 79 if reaches_build else run.returncode != 0
             assert not any("notarytool submit " in call for call in calls)
             print("PASS mocked packaging:", case, "validated before build; no real build or upload")
+        # Check the real configurator's pre-signing mutation, separately from the
+        # read-only signed-bundle gates above. It must stamp the intended flavor.
+        for case, service_mode, service_url, required, succeeds in (
+            ("personal_configure", "personal", "", "0", True),
+            ("hosted_configure", "hosted", "https://dictation.example.com:443/", "1", True),
+            ("hosted_development_unconfigured", "hosted", "", "0", True),
+            ("hosted_required_missing", "hosted", "", "1", False),
+            ("personal_required_conflict", "personal", "", "1", False),
+            ("personal_configure_mixed", "personal", "https://dictation.example.com", "0", False),
+            ("invalid_configure_mode", "automatic", "", "0", False),
+        ):
+            plist = fixture / (case + ".plist")
+            plist.write_bytes(plistlib.dumps(info))
+            before = plist.read_bytes()
+            runenv = dict(env, EXPERTISE_SERVICE_MODE=service_mode, EXPERTISE_SERVICE_URL=service_url,
+                          HOSTED_SERVICE_REQUIRED=required)
+            run = subprocess.run(["python3", str(fixture / "scripts/configure-hosted-service.py"), str(plist)],
+                                 env=runenv, capture_output=True, text=True)
+            assert (run.returncode == 0) == succeeds, (case, run.stderr)
+            if succeeds:
+                configured = plistlib.loads(plist.read_bytes())
+                assert configured["ExpertiseServiceMode"] == service_mode
+                if service_url:
+                    assert configured["ExpertiseServiceURL"] == "https://dictation.example.com"
+                else:
+                    assert "ExpertiseServiceURL" not in configured
+                assert configured["SURequireSignedFeed"] is True
+            else:
+                assert plist.read_bytes() == before, (case, "invalid config changed plist")
+            print("PASS mocked packaging:", case, "explicit build flavor; no signing or network")
     print("All packaging fixtures passed. No real build, signing, notarization, or installation occurred.")
 
 

@@ -1,8 +1,8 @@
 # Expertise Dictation — usage guide
 
-1.1.9 development guide · macOS 14 or later · Apple silicon and Intel
+1.1.9 personal connection guide · macOS 14 or later · Apple silicon and Intel
 
-**Release status:** 1.1.9 is being validated. The operator-funded service still needs a deployed account and budget. A source build without that connection cannot use the free service; an existing personal API-key connection remains available. Download a published installer from the [releases page](https://github.com/shengha2/expertise-dictation-releases/releases), and check its release notes for the tested features.
+**Connection:** This release uses your own provider API key. Existing saved keys carry over; new users add a key in Connection settings. Provider charges apply. The free hosted service is not included. Download a published installer from the [releases page](https://github.com/shengha2/expertise-dictation-releases/releases), and check its release notes and installer receipt for the exact validation and Apple notarization status.
 
 Expertise Dictation types your speech where you are writing. It uses OpenAI or your selected provider, independently of Apple's built-in Dictation.
 
@@ -17,6 +17,8 @@ The app keeps the original bundle identity, so upgrades preserve preferences, sa
 
 Choose **Check for Updates…** in the menu bar to look immediately. Automatic checking and installation are in **Preferences → More options → Updates**. Version 1.1.9 defaults to hourly checks; an existing explicit update preference is preserved. Earlier versions keep their own schedule until upgraded. Updates are checked periodically, not delivered instantly by push notifications.
 
+Home also shows your installed version and **Check for updates**. A manual check brings the updater's response forward. When a downloaded update is ready, the action changes to **Restart to update**. A published version older than or equal to your installed version is not an upgrade.
+
 When an update has downloaded, its version and **Restart to update** action stay visible. With automatic installation enabled, it can restart after 15 seconds of safe idle time with setup and Preferences closed. It waits while you dictate, process text, inspect a Copy/error card, or edit a sheet. Copy any pending text and dismiss the card first. **Restart to update** lets you proceed from Preferences when there is no recording, pending result, editing sheet or unsaved settings draft. Save, add or clear an unfinished API-key or dictionary edit before restarting.
 
 A new app must actually be published in the signed update feed before anyone can receive it. A locally built DMG does not update that feed. Versions before 1.1.4 need a manual DMG upgrade once because they do not have the configured update channel.
@@ -27,9 +29,9 @@ Published distribution builds must be signed with Developer ID and notarized by 
 
 Setup follows five steps. Each step checks the thing it asks you to do. **Set up later** leaves setup unfinished so you can return through **Check setup**.
 
-### 1. Permissions
+Before the practice dictation, open **Connection settings**, paste your provider API key and click **Save**. You can reach it from setup or **Preferences → More options → Connection**. Return to **Finish setup** afterward; completed microphone and shortcut checks are kept unless those inputs change. If you already used a personal connection, its saved keys and provider choices remain available.
 
-![The permissions step in Expertise Dictation](docs/images/1.1.9/onboarding-permissions.jpg)
+### 1. Permissions
 
 Click **Allow microphone**, then Allow in the macOS prompt. If it was previously denied, use **Open Microphone Settings** and enable Expertise Dictation under **Privacy & Security → Microphone**.
 
@@ -66,7 +68,7 @@ You can choose another shortcut if your keyboard makes Fn inconvenient. If the s
 
 Click the practice message field. Press Fn, speak, then press Fn again. Your text should appear in that field. Setup only marks practice complete after the controller confirms insertion; typing the sample yourself does not count.
 
-When a free-service build is connected, no sign-in or API key is required. If the service is unavailable, setup offers a retry and keeps the completed checks. Existing personal connections continue to work. You can manage those in **Preferences → More options → Connection**.
+If the provider connection is missing, choose **Open connection settings**, save your key, and return to setup. If a provider request fails, check that connection and retry; completed local checks are kept. The personal release does not ask you to wait for a free-service deployment.
 
 ### 5. Ready
 
@@ -120,13 +122,13 @@ The app deliberately avoids pasting into an unknown field. If a particular app r
 
 Audio is saved on this Mac before it is sent, in bounded segments. A recording succeeds only after every segment has completed. Network failures, sleep and app interruptions retain captured audio for **Recover Saved Recording…** or Home's **Retry recording** action. Cancelling a recovery attempt keeps the saved recording.
 
-The two-hour maximum is a safety limit, not a claim that every two-hour session has been tested. Audio spoken while the microphone is unavailable cannot be recovered. Free-service usage limits can temporarily stop processing; saved recordings remain available for retry.
+The two-hour maximum is a safety limit, not a claim that every two-hour session has been tested. Audio spoken while the microphone is unavailable cannot be recovered. Provider quotas and network failures can temporarily stop processing; saved recordings remain available for retry.
 
 ## Privacy and cost
 
-The free service passes audio and text to OpenAI. It does not persist recordings or transcripts. It keeps limited anonymous usage and rate-limit counters to control the operator's cost; the app uses a random installation ID, not an account or a hardware identifier. Hosted availability depends on the operator's configured limits.
+Requests in this personal release go to your configured provider and are billed to your account. Your provider key is never part of the app download or public source. Audio and text handling at the provider depends on that account's settings and terms.
 
-With a personal API-key connection, requests go to your configured provider and are billed to your account. Your provider key is never part of the app download or public source.
+A separate hosted service remains under development. It is not part of this personal release, which does not route audio or text through the operator's gateway.
 
 On this Mac, legacy personal keys are stored in a user-readable, permission-restricted file, not encrypted Keychain storage. Recovery recordings and optional history also remain local:
 

@@ -247,11 +247,16 @@ struct StagedUpdateState {
 final class AppUpdater: NSObject, ObservableObject, SPUUpdaterDelegate {
     static let shared = AppUpdater()
 
+    nonisolated static var installedVersion: String {
+        (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "dev"
+    }
+
     @Published private(set) var isConfigured = false
     @Published private(set) var canCheckForUpdates = false
     @Published private(set) var canRestartToUpdate = false
     @Published private(set) var updateReady = false
     @Published private(set) var availableVersion: String?
+    @Published private(set) var actionUnavailableReason: String?
     @Published private(set) var statusText = "Automatic updates are not configured for this build."
     @Published var automaticallyChecksForUpdates = false {
         didSet {
@@ -317,7 +322,11 @@ final class AppUpdater: NSObject, ObservableObject, SPUUpdaterDelegate {
     }
 
     func checkForUpdates() {
+        // Re-read Sparkle's current capability rather than relying on a delayed
+        // Combine notification. Home retains the explanation if checking is busy.
+        refreshState()
         guard isConfigured, canCheckForUpdates else { return }
+        NSApp.activate(ignoringOtherApps: true)
         staged.beginCheck()
         refreshState()
         updaterController?.checkForUpdates(nil)
@@ -392,16 +401,23 @@ final class AppUpdater: NSObject, ObservableObject, SPUUpdaterDelegate {
     }
 
     private func refreshState() {
+        let sparkleCanCheck = updaterController?.updater.canCheckForUpdates ?? false
         canCheckForUpdates = isConfigured && !staged.dictationBusy && !staged.hasStagedInstall &&
-            !isInstallingUpdate && (updaterController?.updater.canCheckForUpdates ?? false)
+            !isInstallingUpdate && sparkleCanCheck
         canRestartToUpdate = isConfigured && !staged.hasQueuedInstall &&
             (staged.canRestart || (relaunchGate.hasPendingInstall && staged.canRequestExplicitRelaunch))
         updateReady = staged.hasStagedInstall || relaunchGate.hasPendingInstall
         availableVersion = staged.version
+        actionUnavailableReason = Self.checkUnavailableReason(configured: isConfigured,
+            dictationBusy: staged.dictationBusy, ready: updateReady, installing: isInstallingUpdate,
+            sparkleCanCheck: sparkleCanCheck)
         if isConfigured {
             statusText = relaunchGate.hasPendingInstall
                 ? "\(staged.version.map { "Version " + $0 } ?? "The update") is ready. Restart is waiting until your work is finished."
                 : staged.statusText
+            if staged.phase == .upToDate {
+                statusText = "You're up to date. Version \(Self.installedVersion) is installed."
+            }
         }
         let needsTimer = staged.hasStagedInstall || relaunchGate.hasPendingInstall
         if needsTimer && idleTimer == nil {
@@ -414,6 +430,16 @@ final class AppUpdater: NSObject, ObservableObject, SPUUpdaterDelegate {
             idleTimer?.invalidate()
             idleTimer = nil
         }
+    }
+
+    nonisolated static func checkUnavailableReason(configured: Bool, dictationBusy: Bool,
+            ready: Bool, installing: Bool, sparkleCanCheck: Bool) -> String? {
+        if !configured { return "Install the latest published app to enable updates." }
+        if dictationBusy { return "Finish your dictation or microphone check before checking for updates." }
+        if ready { return nil } // The staged status explains Restart and any protected work.
+        if installing { return "The update is being installed. Your app will reopen when it is ready." }
+        if !sparkleCanCheck { return "An update check or download is already in progress. Wait for it to finish, or use the open update window." }
+        return nil
     }
 
     nonisolated static func validConfiguration(_ info: [String: Any]) -> Bool {

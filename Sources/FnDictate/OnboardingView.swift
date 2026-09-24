@@ -1,8 +1,8 @@
 import SwiftUI
 import AppKit
 
-/// A short, verified path from permissions to an actual insertion. No account or
-/// provider key belongs in this flow, and leaving early never completes setup.
+/// A short, verified path from permissions to an actual insertion. Connection
+/// setup follows the distribution mode, and leaving early never completes setup.
 struct OnboardingView: View {
     @ObservedObject var controller: DictationController
     let hotkey: HotkeyMonitor
@@ -148,9 +148,17 @@ struct OnboardingView: View {
                 .fixedSize(horizontal: false, vertical: true)
             switch step {
             case .permissions:
-                Text("No account or API key to set up.")
+                Text(settings.usesHostedService ? "No account or API key to set up." : "Use your own API key.")
                     .font(.hub(13, .medium)).foregroundColor(Hub.green)
-                Text("Online dictation sends audio and text to the processing service. Your microphone is used when you start a recording or this setup check.")
+                if !settings.usesHostedService {
+                    Text("Save your OpenAI API key in Connection settings before trying dictation. Your provider bills usage to your account.")
+                        .font(.hub(12)).foregroundColor(Hub.helper).fixedSize(horizontal: false, vertical: true)
+                    Button(serviceReady ? "Connection settings" : "Add your API key") { openConnectionSettings() }
+                        .buttonStyle(PillButtonStyleHub(kind: .secondary, small: true))
+                }
+                Text(settings.usesHostedService
+                     ? "Online dictation sends audio and text to the processing service. Your microphone is used when you start a recording or this setup check."
+                     : "Online dictation sends audio and text directly to your selected providers. Your microphone is used when you start a recording or this setup check.")
                     .font(.hub(12)).foregroundColor(Hub.helper).fixedSize(horizontal: false, vertical: true)
             case .microphone:
                 Text("Say a few words in any language. This check measures audio on your Mac; it does not send speech for transcription.")
@@ -469,20 +477,22 @@ struct OnboardingView: View {
             }
         } else if !serviceReady {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Your personal connection needs attention. Open Connection settings to repair it, then return here to continue.")
+                Text("Add or check your API key in Connection settings, then return here to continue. Your microphone and shortcut checks are kept.")
                     .font(.hub(12)).foregroundColor(Hub.helper).fixedSize(horizontal: false, vertical: true)
-                Button("Open connection settings") {
-                    session.suspend()
-                    NotificationCenter.default.post(name: .fnDictateOpenSettings, object: nil,
-                                                    userInfo: ["tab": SettingsTab.advanced.rawValue])
-                }
+                Button("Open connection settings") { openConnectionSettings() }
                     .buttonStyle(PillButtonStyleHub(kind: .secondary, small: true))
-                if HostedService.baseURL != nil, service.state == .ready {
+                if settings.offersHostedService, HostedService.baseURL != nil, service.state == .ready {
                     Button("Use included service") { settings.usesHostedService = true }
                         .buttonStyle(PillButtonStyleHub(kind: .ghost, small: true))
                 }
             }
         }
+    }
+
+    private func openConnectionSettings() {
+        session.suspend()
+        NotificationCenter.default.post(name: .fnDictateOpenSettings, object: nil,
+                                        userInfo: ["tab": SettingsTab.advanced.rawValue])
     }
 
     private var footer: some View {

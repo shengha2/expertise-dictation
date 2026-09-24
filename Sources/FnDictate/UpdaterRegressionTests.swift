@@ -84,6 +84,12 @@ enum UpdaterRegressionTests {
         expect("up-to-date outcome is not an error", AppUpdater.cycleStatus(for: NSError(domain: SUSparkleErrorDomain, code: Int(SUError.noUpdateError.rawValue))) == "You're up to date.")
         expect("user cancellation is not an error", AppUpdater.cycleStatus(for: NSError(domain: SUSparkleErrorDomain, code: Int(SUError.installationCanceledError.rawValue))) == "Update installation canceled.")
         expect("real update failure remains visible", AppUpdater.cycleStatus(for: NSError(domain: NSURLErrorDomain, code: -1009)).contains("did not complete"))
+        expect("idle manual update check has no disabled explanation", AppUpdater.checkUnavailableReason(configured: true, dictationBusy: false, ready: false, installing: false, sparkleCanCheck: true) == nil)
+        expect("recording explains why manual checking waits", AppUpdater.checkUnavailableReason(configured: true, dictationBusy: true, ready: false, installing: false, sparkleCanCheck: true)?.contains("Finish your dictation") == true)
+        expect("concurrent check remains visibly in progress", AppUpdater.checkUnavailableReason(configured: true, dictationBusy: false, ready: false, installing: false, sparkleCanCheck: false)?.contains("already in progress") == true)
+        expect("staged update uses restart status rather than another check", AppUpdater.checkUnavailableReason(configured: true, dictationBusy: false, ready: true, installing: false, sparkleCanCheck: false) == nil)
+        expect("installation explains reopening instead of disabled check", AppUpdater.checkUnavailableReason(configured: true, dictationBusy: false, ready: false, installing: true, sparkleCanCheck: false)?.contains("reopen") == true)
+        expect("unconfigured check gives installation guidance", AppUpdater.checkUnavailableReason(configured: false, dictationBusy: false, ready: false, installing: false, sparkleCanCheck: false)?.contains("published app") == true)
         stagedInstallChecks(expect: expect)
         inlineDraftChecks(expect: expect)
     }

@@ -8,28 +8,64 @@ enum HostedServiceRegressionTests {
         guard let defaults = UserDefaults(suiteName: suite) else { return }
         defaults.removePersistentDomain(forName: suite)
         defer { defaults.removePersistentDomain(forName: suite) }
-        let fresh = Settings(defaults: defaults)
+        let fresh = Settings(defaults: defaults, serviceDistributionMode: .hosted)
         check("hosted: fresh setup uses free service and Full rewrite", fresh.usesHostedService && fresh.dictationMode == .rewrite, "")
-        check("hosted: unfinished fresh setup retains free service after restart", Settings(defaults: defaults).usesHostedService, "")
+        check("hosted: unfinished fresh setup retains free service after restart", Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
         fresh.hasCompletedSetup = true
-        check("hosted: completing fresh setup retains no-key routing after restart", Settings(defaults: defaults).usesHostedService, "")
+        check("hosted: completing fresh setup retains no-key routing after restart", Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
         fresh.sttEngine = .assemblyAI
         fresh.cleanupModel = .auto
-        check("hosted: provider preferences cannot reinterpret a migrated free-service choice", Settings(defaults: defaults).usesHostedService, "")
+        check("hosted: provider preferences cannot reinterpret a migrated free-service choice", Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
 
         // This must be a genuinely pre-migration installation, not the fresh
         // instance above after it completes setup.
         defaults.removePersistentDomain(forName: suite)
         defaults.set(true, forKey: "hasCompletedSetup")
         defaults.set("verbatim", forKey: "dictationMode")
-        let existing = Settings(defaults: defaults)
+        let existing = Settings(defaults: defaults, serviceDistributionMode: .hosted)
         check("hosted: upgrade preserves personal connection and No rewrite", !existing.usesHostedService && existing.dictationMode == .verbatim, "")
         defaults.removeObject(forKey: "hasCompletedSetup")
-        check("hosted: migrated personal connection remains personal after setup is reset", !Settings(defaults: defaults).usesHostedService, "")
+        check("hosted: migrated personal connection remains personal after setup is reset", !Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
         existing.usesHostedService = true
-        check("hosted: explicit free-service choice survives relaunch", Settings(defaults: defaults).usesHostedService, "")
+        check("hosted: explicit free-service choice survives relaunch", Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
         existing.usesHostedService = false
-        check("hosted: explicit personal-key choice survives relaunch", !Settings(defaults: defaults).usesHostedService, "")
+        check("hosted: explicit personal-key choice survives relaunch", !Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
+
+        // A personal distribution must work independently of the hosted deployment.
+        // Its override never deletes keys or rewrites existing provider settings.
+        defaults.removePersistentDomain(forName: suite)
+        let personal = Settings(defaults: defaults, serviceDistributionMode: .personal)
+        check("personal release: fresh setup selects API-key routing without a free-service option",
+              !personal.usesHostedService && !personal.offersHostedService, "")
+        check("personal release: fresh choice remains personal after restart",
+              !Settings(defaults: defaults, serviceDistributionMode: .personal).usesHostedService, "")
+        personal.hasCompletedSetup = true
+        personal.sttEngine = .assemblyAI
+        personal.cleanupModel = .sonnet5
+        personal.openAIBaseURL = "https://api.example.com"
+        let retained = Settings(defaults: defaults, serviceDistributionMode: .personal)
+        check("personal release: existing provider choices, endpoint and completed setup survive",
+              retained.sttEngine == .assemblyAI && retained.cleanupModel == .sonnet5 &&
+              retained.openAIBaseURL == "https://api.example.com" && retained.hasCompletedSetup, "")
+        personal.usesHostedService = true
+        check("personal release: stale bindings cannot enable the unavailable hosted route",
+              !personal.usesHostedService && !defaults.bool(forKey: "usesHostedService"), "")
+        check("personal release: upgrading later to hosted does not replace an explicit personal choice",
+              !Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
+
+        defaults.set(true, forKey: "usesHostedService")
+        let hostedChoiceInPersonalBuild = Settings(defaults: defaults, serviceDistributionMode: .personal)
+        check("personal release: a previous hosted choice is inactive without destroying its preference",
+              !hostedChoiceInPersonalBuild.usesHostedService && defaults.bool(forKey: "usesHostedService"), "")
+        hostedChoiceInPersonalBuild.usesHostedService = true
+        check("personal release: a rejected hosted selection does not erase the dormant saved choice",
+              !hostedChoiceInPersonalBuild.usesHostedService && defaults.bool(forKey: "usesHostedService"), "")
+        check("personal release: a later hosted distribution restores the dormant connection choice",
+              Settings(defaults: defaults, serviceDistributionMode: .hosted).usesHostedService, "")
+        check("personal release: bundle mode selects the explicit personal distribution",
+              ServiceDistributionMode.resolve("personal") == .personal, "")
+        check("hosted release: hosted and legacy bundles retain their distribution behavior",
+              ServiceDistributionMode.resolve("hosted") == .hosted && ServiceDistributionMode.resolve(nil) == .hosted, "")
 
         for value in ["http://api.example.com", "https://user:pass@api.example.com", "https://api.example.com/v1", "https://api.example.com/?secret=x", "https://localhost", "https://api.example.com#fragment", "https://api.example.com:8443"] {
             check("hosted: rejects unsafe service origin \(value)", HostedService.validatedOrigin(value) == nil, "")

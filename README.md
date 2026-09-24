@@ -2,7 +2,7 @@
 
 Open-source macOS dictation with a default Fn shortcut, multilingual speech, editable public prompts, and restrained rewriting. Requires macOS 14 or later. It does not use Apple's built-in Dictation.
 
-**1.1.9 is in development.** The new onboarding and rewrite changes are being validated. The free service has not been deployed, and native ChatGPT insertion still needs an interactive check. Do not treat a source build as a tested public release. Published DMGs and their actual release notes are in the [release repository](https://github.com/shengha2/expertise-dictation-releases/releases).
+**The 1.1.9 Mac release uses your own provider API key.** Existing personal connections carry over; new users add their key during setup. Provider charges apply. The free hosted service is deferred and is not included in this release. Published DMGs and their actual release status are in the [release repository](https://github.com/shengha2/expertise-dictation-releases/releases); the [validation report](docs/release-1.1.9.md) records remaining limitations. A source build is not proof of a tested public release.
 
 ## Use it
 
@@ -26,11 +26,11 @@ The [prompt files](prompts/README.md), [mode design and research](docs/rewrite-d
 
 The source and project-owned prompts/assets are [MIT licensed](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md) preserve the licenses for Sparkle, Inter and the sound cues. Typeless and Wispr Flow informed interaction and rewriting research; their proprietary prompts and assets are not included.
 
-## Free service and personal connections
+## Personal connection release and future hosted service
 
-The intended default is an operator-funded service with no account and no user API key. The [service source](service/README.md) contains a bounded OpenAI relay with anonymous installation tokens, rate limits, daily budget reservations and fixed model choices. It starts disabled until an operator supplies secrets, a deployment and a budget. No OpenAI key is embedded in the app or repository.
+The personal release asks for your provider API key under **Preferences → More options → Connection**. Existing keys and personal provider choices stay selected on upgrade. Requests go to your selected provider and are billed to that account. No provider key is embedded in the app or repository.
 
-Existing personal API-key connections stay selected on upgrade. Advanced users can choose **Use my own API key** in Connection settings. Personal requests are billed to that user's provider account. Fresh source builds without a configured hosted URL show the service as unavailable instead of pretending to offer free inference.
+The future operator-funded mode is separate. Its [service source](service/README.md) contains a bounded OpenAI relay with anonymous installation tokens, rate limits, daily budget reservations and fixed model choices. It remains disabled and undeployed. A personal bundle does not offer or route requests through that service. Ordinary source builds still default to hosted mode and show it unavailable without a deployment; choose the personal flavor explicitly to use the app with your own key.
 
 ## Build and test
 
@@ -39,6 +39,7 @@ Apple's Command Line Tools are sufficient; Xcode is optional. The supported buil
 ```sh
 scripts/build.sh                    # arm64 + x86_64 app bundle
 ARCHS=arm64 DEBUG=1 scripts/build.sh  # faster local development
+EXPERTISE_SERVICE_MODE=personal scripts/build.sh  # explicit own-key app bundle
 scripts/test.sh                     # offline app checks
 ```
 
@@ -52,7 +53,7 @@ scripts/test.sh                     # offline app checks
 
 Offline controller and overlay checks do not prove live microphone, physical Fn, desktop switching, or paste behavior in a particular app. Real-provider evaluation requires your own configured credentials and may incur a charge; the evaluation script is dry-run by default. See [validation status](docs/release-1.1.9.md) for the measured scope and remaining release gates.
 
-To change defaults, edit `prompts/*.txt`, run `python3 scripts/generate-prompts.py`, and evaluate the fixed cases. Builds reject out-of-sync generated prompts. To connect a deployment, provide `EXPERTISE_SERVICE_URL=https://your-public-service-host` while building. Non-local packaging of 1.1.9 and later requires a valid public HTTPS service origin, including when packaging an already-built app. `HOSTED_SERVICE_REQUIRED=1` also rejects a missing URL during a direct development build. These configuration checks do not replace a live end-to-end deployment test.
+To change defaults, edit `prompts/*.txt`, run `python3 scripts/generate-prompts.py`, and evaluate the fixed cases. Builds reject out-of-sync generated prompts. For a personal release, set `EXPERTISE_SERVICE_MODE=personal` and leave `EXPERTISE_SERVICE_URL` unset. For hosted mode, set `EXPERTISE_SERVICE_MODE=hosted` and `EXPERTISE_SERVICE_URL=https://your-public-service-host` before building. Non-local packaging of 1.1.9 and later inspects the signed app's embedded flavor: personal must omit the hosted URL; hosted must contain a valid public HTTPS origin. Missing configuration never silently selects personal mode. `HOSTED_SERVICE_REQUIRED=1` explicitly requires hosted configuration, including during development, and conflicts with personal mode. These configuration checks do not replace a live end-to-end service test.
 
 ## Local data
 

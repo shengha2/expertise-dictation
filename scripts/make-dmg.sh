@@ -25,6 +25,23 @@ VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$SOUR
 if [[ "$MODE" != "--local" ]]; then
   python3 "$ROOT/scripts/configure-hosted-service.py" --check-release-version "$VERSION" "$INFO"
 fi
+SERVICE_MODE="$(/usr/libexec/PlistBuddy -c 'Print :ExpertiseServiceMode' "$INFO" 2>/dev/null || printf legacy)"
+case "$SERVICE_MODE" in
+  personal)
+    CONNECTION_NOTE="This is the personal-connection release. Add your own provider API key in
+   Preferences > More options > Connection before practice. Existing saved keys
+   are retained. Provider charges apply; the free hosted service is not included."
+    ;;
+  hosted)
+    CONNECTION_NOTE="This hosted build needs an available operator service; see MINT.md for
+   availability and the optional personal API-key connection."
+    ;;
+  legacy)
+    CONNECTION_NOTE="This earlier build uses its existing connection settings. See MINT.md
+   and Preferences for your provider connection and setup requirements."
+    ;;
+  *) fail "unknown embedded service mode; rebuild with personal or hosted" ;;
+esac
 DOCUMENTATION="$(python3 "$ROOT/scripts/public_documents.py")"
 mkdir -p "$DIST"
 DIST="$(cd "$DIST" && pwd)"
@@ -145,8 +162,7 @@ INSTALL
    aside after the new copy works. Keep its Application Support data unchanged.
 $INSTALL_NOTE
 3. Follow the app's guided permissions, microphone, shortcut, and practice checks.
-   The hosted connection needs an available operator service; see MINT.md for
-   current availability and the optional personal API-key connection.
+   $CONNECTION_NOTE
 4. Read MINT.md for the shortcut, dictation workflow, and troubleshooting.
 
 Do not disable Gatekeeper or remove quarantine attributes to install this app.
@@ -167,6 +183,7 @@ printf '%s  %s\n' "$HASH" "$NAME.dmg" > "$STAGE/$NAME.dmg.sha256"
 cat > "$STAGE/$NAME-release.txt" <<TXT
 Expertise Dictation $VERSION
 Status: $STATUS
+Service mode: $SERVICE_MODE
 Created (UTC): $(date -u +%Y-%m-%dT%H:%M:%SZ)
 Architectures: $(lipo -archs "$APP/Contents/MacOS/FnDictate")
 Bundle identifier: $(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Contents/Info.plist")

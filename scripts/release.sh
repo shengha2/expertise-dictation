@@ -5,6 +5,9 @@
 # scripts/release.sh --notarized universal signed/notarized manual-install DMG (uploads to Apple)
 # scripts/release.sh --release  universal signed/notarized DMG (uploads to Apple)
 # Set SKIP_BUILD=1 and BUILD_DIR to package an already tested build.
+# Choose EXPERTISE_SERVICE_MODE=personal explicitly for an own-API-key release;
+# otherwise a 1.1.9+ hosted release requires EXPERTISE_SERVICE_URL.
+# SKIP_BUILD always checks the signed bundle's embedded flavor, not these env vars.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MODE="${1:---check}"

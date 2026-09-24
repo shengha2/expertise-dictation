@@ -248,10 +248,26 @@ enum MicPreference: String, CaseIterable, Identifiable {
     var title: String { self == .builtIn ? "Prefer the built-in microphone (avoids low-quality Bluetooth mics)" : "System default input" }
 }
 
+/// Release configuration is separate from the user's saved connection choice.
+/// An older bundle without this key retains the original hosted-capable behavior.
+enum ServiceDistributionMode: String {
+    case personal, hosted
+
+    static func resolve(_ value: String?) -> Self {
+        value == "personal" ? .personal : .hosted
+    }
+
+    static var bundled: Self {
+        resolve(Bundle.main.object(forInfoDictionaryKey: "ExpertiseServiceMode") as? String)
+    }
+}
+
 /// All user preferences. Backed by UserDefaults; API keys live in the Keychain (see Keychain.swift).
 final class Settings: ObservableObject {
     static let shared = Settings()
     private let defaults: UserDefaults
+    let serviceDistributionMode: ServiceDistributionMode
+    var offersHostedService: Bool { serviceDistributionMode == .hosted }
 
     // Transcription
     @Published var sttEngine: STTEngine { didSet { save("sttEngine", sttEngine.rawValue) } }
@@ -265,7 +281,18 @@ final class Settings: ObservableObject {
         }
     }
     @Published var keepConnectionWarm: Bool { didSet { save("keepConnectionWarm", keepConnectionWarm) } }
-    @Published var usesHostedService: Bool { didSet { save("usesHostedService", usesHostedService) } }
+    @Published var usesHostedService: Bool {
+        didSet {
+            // A personal-only release cannot route to an unavailable service,
+            // even if a stale binding tries to enable it. Keep the saved choice
+            // dormant so installing a hosted-capable build can restore it.
+            guard offersHostedService else {
+                if usesHostedService { usesHostedService = false }
+                return
+            }
+            save("usesHostedService", usesHostedService)
+        }
+    }
 
     // Clean-up
     @Published var dictationMode: DictationMode { didSet { save("dictationMode", dictationMode.rawValue) } }
@@ -321,8 +348,9 @@ final class Settings: ObservableObject {
     // App state
     @Published var hasCompletedSetup: Bool { didSet { save("hasCompletedSetup", hasCompletedSetup) } }
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, serviceDistributionMode: ServiceDistributionMode = .bundled) {
         self.defaults = defaults
+        self.serviceDistributionMode = serviceDistributionMode
         func raw<T: RawRepresentable>(_ key: String, _ def: T) -> T where T.RawValue == String {
             if let s = defaults.string(forKey: key), let v = T(rawValue: s) { return v }
             return def
@@ -342,12 +370,12 @@ final class Settings: ObservableObject {
         chineseVariant = raw("chineseVariant", ChineseVariant.simplified)
         dictationLanguages = DictationLanguage.normalized(defaults.stringArray(forKey: "dictationLanguages") ?? DictationLanguage.systemDefault)
         keepConnectionWarm = bool("keepConnectionWarm", true)
-        // Existing provider selections keep their keys and routing. A fresh installation
-        // uses the operator-funded service without asking for an account or API key.
+        // Existing provider selections keep their keys and routing. Only a hosted
+        // distribution defaults a fresh installation to the included service.
         let existingConnection = defaults.bool(forKey: "hasCompletedSetup") ||
             defaults.object(forKey: "sttEngine") != nil || defaults.object(forKey: "cleanupModel") != nil
-        let initialHostedChoice = bool("usesHostedService", !existingConnection)
-        usesHostedService = initialHostedChoice
+        let initialHostedChoice = bool("usesHostedService", serviceDistributionMode == .hosted && !existingConnection)
+        usesHostedService = serviceDistributionMode == .hosted && initialHostedChoice
         // Persist the one-time migration. Property observers do not run during
         // initialization; otherwise finishing a fresh setup would make its next
         // launch look like a legacy personal-key installation.
