@@ -1,0 +1,22 @@
+name = "expertise-dictation-gateway"
+main = "src/worker.js"
+compatibility_date = "2026-07-30"
+workers_dev = false
+preview_urls = false
+
+[vars]
+# Disabled until the operator approves deployment and the spending ceiling.
+DAILY_BUDGET_MICROUSD = "0"
+INSTALL_DAILY_MICROUSD = "5000000"
+IP_DAILY_MICROUSD = "10000000"
+
+[[durable_objects.bindings]]
+name = "GATEWAY"
+class_name = "DictationGateway"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DictationGateway"]
+
+[observability]
+enabled = false

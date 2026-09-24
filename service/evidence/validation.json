@@ -1,0 +1,42 @@
+{
+  "created_at": "2026-09-24T04:07:15.725652+00:00",
+  "node": "v24.19.0",
+  "miniflare": "4.20260730.0",
+  "workerd": "1.20260730.1",
+  "test_command": "node --test service/test/*.test.mjs",
+  "passed": 41,
+  "failed": 0,
+  "suites": {
+    "core_and_sqlite": 27,
+    "local_worker_and_durable_object": 13,
+    "bounded_loopback_fixture": 1
+  },
+  "scope": "Synthetic offline/core, local workerd runtime and loopback HTTP fixtures. All provider requests intercepted. Five-minute PCM allowance tested with virtual timestamps at 4x replay.",
+  "actual_provider_calls": 0,
+  "api_spend": 0,
+  "deployed": false,
+  "default_daily_budget_microUSD": 0,
+  "not_verified": [
+    "Cloudflare deployed routing/account",
+    "OpenAI production credentials/model access",
+    "Real microphone or provider long-audio transcription",
+    "Actual cloud/provider invoice"
+  ],
+  "sha256": {
+    "src/worker.js": "42c23b888bd594f53681e2a79b7b4d07c8e2ee92934a7da610fd5dae01a8d4f2",
+    "src/core.js": "4ceee568752b4d6c6bfd8e705071cf16076fa7d6c9cacdc0ef41b7386139221a",
+    "src/audio.js": "807ae2429a7c9d7ab8e3348ea653f451c70575057dcf0bf530354d6f9c6cfe33",
+    "src/ledger.js": "787b50b676eae8f40ec80da430845db4ede10c39d6a4a58395e68c5feeb1b082",
+    "test/core.test.mjs": "93bcb7bcf303a638aebe1d77df159e524f4567de3a8ef57dac56bf96f0a89a80",
+    "test/runtime.test.mjs": "255d4d8892b9acf20bc107898a2a63190b64b90a13a9b84d710bc8dca977b85d",
+    "test/native.test.mjs": "f0c5c33939ba92efed7d245e6d1ceca7204a6e137e3a4429d18d8151b75b68c3",
+    "test/native-fixture.mjs": "6c18678542ef6179bd0d34dbdea4007afd617d6b4e461a91220124fcae0f84e8",
+    "test/native-worker.mjs": "a9106221fdfcd72fa5be45392f2a4d8b33ce581e1d842ff33e7a7f5a788b4f7e",
+    "wrangler.toml": "d0a395a7043f95f22cf31d10643dc3fb9771a28bf6246e36c14d340262fbcdde",
+    "package.json": "b8793c69d1d3f04e5bbc1f432523607687acbdfbd1f61c16fddc590c71cdeb37",
+    "pnpm-lock.yaml": "9f6d5ef0d2e59b4e532eb9caa7bcc090c01a869a9f1a39057432e6923a40ac7c",
+    "README.md": "443be6f867aaabc61393c3c072bb8280a41c5a2a4a4346a3e6b1e86dcb73da92",
+    "evidence/local-tests.log": "50d03efa52b8246d142b0a56225a13bf73852586171685bf3a5156419c2c1db6"
+  },
+  "note": "41 local tests rerun after expanding the test-only adapter for a native cached-token rejection scenario; production service unchanged. The Swift handshake case is reported separately."
+}
