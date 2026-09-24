@@ -16,9 +16,32 @@ enum CleanupPolicy {
     ]
     private static let spelledAddress = try! NSRegularExpression(pattern: #"(?i)(?<![\p{L}])(at|@)\s+\S+\s+(dot|点|點)\s+\S+"#)
 
+    // These cues request a formatting decision, not a local text rewrite. The model
+    // still distinguishes actual items from a narrative and honors a prose preference.
+    // Strip protected literals before looking for markers so a URL or code example
+    // cannot accidentally enable a rewrite request on an otherwise clean sentence.
+    private static let enumerationCues = [
+        #"(?i)\bfirst(?:ly)?\b[\s\S]+\bsecond(?:ly)?\b"#,
+        #"(?i)\b(?:item|number)\s+one\b[\s\S]+\b(?:item|number)\s+two\b"#,
+        #"第\s*[一1１][\s\S]+第\s*[二2２]"#,
+        #"一是[\s\S]+二是"#,
+        #"(?i)\b(?:two|three|four|five|six|seven|eight|nine|ten|[2-9]|10)\s+(?:separate\s+)?(?:asks|requests|items|steps|checks|tasks|points)\b[^.!?\r\n:：]{0,100}[:：][\s\S]+(?:\band\b|[;；])"#,
+        #"(?:[两兩二三四五六七八九十]|[2-9]|10)\s*(?:个|個|项|項|条|條)\s*(?:要求|请求|請求|事项|事項|步骤|步驟|任务|任務|检查|檢查|要点|要點)[^。！？\r\n:：]{0,50}[:：][\s\S]+[、，,;；]"#,
+        #"(?:^|[\s:：])1[.、)）:](?![0-9])\s*[\p{L}\p{N}][\s\S]+(?:\s|[;；])2[.、)）:](?![0-9])\s*[\p{L}\p{N}]"#,
+    ].map { try! NSRegularExpression(pattern: $0) }
+
+    static func hasExplicitEnumeration(_ raw: String) -> Bool {
+        let prose = DictationPunctuation.proseWithoutLiterals(raw)
+        let range = NSRange(prose.startIndex..., in: prose)
+        return enumerationCues.contains { $0.firstMatch(in: prose, range: range) != nil }
+    }
+
     static func decide(raw: String, cjkSpacing: Bool, spokenCommands allowCommands: Bool) -> Decision {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty { return Decision(needsModel: false, reason: "empty") }
+        if hasExplicitEnumeration(trimmed) {
+            return Decision(needsModel: true, reason: "explicit list")
+        }
         // Anything the local pass would change (fillers, stutters, repeats) is a sign the model has work.
         if LocalCleanup.light(trimmed, cjkSpacing: cjkSpacing) != LocalCleanup.presentation(trimmed, cjkSpacing: cjkSpacing) {
             return Decision(needsModel: true, reason: "fillers or repeats")

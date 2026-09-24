@@ -49,24 +49,24 @@ enum SetupGuideKind: String, CaseIterable, Identifiable {
             return [
                 ("Turn off Apple Dictation first", "Open System Settings → Keyboard. Scroll to Dictation and switch it off."),
                 ("Set the Globe action to Do Nothing", "Scroll up to “Press 🌐︎ key to”, above Keyboard Shortcuts… Choose “Do Nothing”. Some Macs label this key Fn."),
-                ("Return to Expertise Dictation", "During setup, press and release Fn in the shortcut check. After setup, one press starts dictation and another finishes it.")
+                ("Return to Expertise Typer", "During setup, press and release Fn in the shortcut check. After setup, one press starts dictation and another finishes it.")
             ]
         case .microphone:
             return [
                 ("Open Microphone settings", "System Settings → Privacy & Security → Microphone."),
-                ("Turn on Expertise Dictation", "Find the app and switch its microphone access on."),
+                ("Turn on Expertise Typer", "Find the app and switch its microphone access on."),
                 ("Return to the app", "The permission status updates automatically.")
             ]
         case .accessibility:
             return [
                 ("Open Accessibility settings", "System Settings → Privacy & Security → Accessibility."),
-                ("Turn on Expertise Dictation", "This lets the app insert text where you are writing."),
+                ("Turn on Expertise Typer", "This lets the app insert text where you are writing."),
                 ("Return to the app", "If macOS asks you to quit and reopen it, follow that prompt.")
             ]
         case .inputMonitoring:
             return [
                 ("Open Input Monitoring settings", "System Settings → Privacy & Security → Input Monitoring."),
-                ("Turn on Expertise Dictation", "Use this permission if macOS asks for keyboard access."),
+                ("Turn on Expertise Typer", "Use this permission if macOS asks for keyboard access."),
                 ("Reopen the app if asked", "Then return here and try your shortcut again.")
             ]
         }
@@ -79,7 +79,7 @@ enum SetupGuideKind: String, CaseIterable, Identifiable {
         case .microphone:
             return "App missing? Use Allow Microphone in setup first so macOS can request access, then check this list again."
         case .accessibility:
-            return "App missing? Click Open Accessibility Settings in setup. Or use + in the system pane and select Expertise Dictation from Applications."
+            return "App missing? Click Open Accessibility Settings in setup. Or use + in the system pane and select Expertise Typer from Applications."
         case .inputMonitoring:
             return "This is only needed if the shortcut asks for it. Use Allow keyboard access in setup first if the app is not listed."
         }
@@ -265,7 +265,7 @@ private struct SetupSettingsExample: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(kind == .fnKey
             ? "Example System Settings, Keyboard. First, turn Dictation off further down the page. Then set Press Globe key to: Do Nothing."
-            : "Example System Settings, Privacy and Security, \(kind.paneName). Expertise Dictation changes from off to on.")
+            : "Example System Settings, Privacy and Security, \(kind.paneName). Expertise Typer changes from off to on.")
     }
 
     private var keyboardRow: some View {
@@ -308,7 +308,7 @@ private struct SetupSettingsExample: View {
                 Image(systemName: "waveform.and.mic").font(.system(size: 17 * scale, weight: .medium)).foregroundColor(.white)
                     .frame(width: 34 * scale, height: 34 * scale)
                     .background(RoundedRectangle(cornerRadius: 8).fill(Hub.buttonGreen))
-                Text("Expertise Dictation").font(.system(size: 13 * scale, weight: .medium)).foregroundColor(Hub.ink)
+                Text("Expertise Typer").font(.system(size: 13 * scale, weight: .medium)).foregroundColor(Hub.ink)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 6)
                 illustratedSwitch(on: false)

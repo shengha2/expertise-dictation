@@ -11,7 +11,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def bundle(path, marker, product="Expertise Dictation", bundle_id="com.hao.fndictate"):
+def bundle(path, marker, product="Expertise Typer", bundle_id="com.hao.fndictate"):
     (path / "Contents/MacOS").mkdir(parents=True)
     (path / "Contents/Info.plist").write_bytes(plistlib.dumps({
         "CFBundleIdentifier": bundle_id, "CFBundleExecutable": "FnDictate",
@@ -38,24 +38,28 @@ def run_case(base, name):
     mocks = case / "mocks"
     for p in (source, installed, mocks):
         p.mkdir(parents=True)
-    app = source / "Expertise Dictation.app"
+    app = source / "Expertise Typer.app"
     bundle(app, "new", bundle_id="wrong.bundle" if name == "wrong-source" else "com.hao.fndictate")
     legacy = installed / "FnDictate.app"
-    dest = installed / "Expertise Dictation.app"
-    if name != "fresh":
+    dest = installed / "Expertise Typer.app"
+    previous = installed / "Expertise Dictation.app"
+    if name not in ("fresh", "dictation", "typer", "dual"):
         bundle(legacy, "old-legacy", product="FnDictate")
-    if name in ("dual", "post-verify-failure", "move-failure"):
+    if name not in ("fresh", "legacy", "typer"):
+        bundle(previous, "old-dictation", product="Expertise Dictation",
+               bundle_id="unrelated.app" if name == "wrong-previous" else "com.hao.fndictate")
+    if name not in ("fresh", "legacy", "dictation"):
         bundle(dest, "old-branded")
-    before = {p.name: (p / "marker.txt").read_text() for p in (legacy, dest) if p.exists()}
+    before = {p.name: (p / "marker.txt").read_text() for p in (legacy, previous, dest) if p.exists()}
     mock(mocks, "pgrep", '[[ "${FIXTURE_CASE}" == running ]] && exit 0\nexit 1\n')
     mock(mocks, "codesign", '''for last; do :; done
-if [[ "$FIXTURE_CASE" == stage-failure && "$last" == *".Expertise-Dictation-install."* ]]; then exit 70; fi
-if [[ "$FIXTURE_CASE" == post-verify-failure && "$last" == "$INSTALL_DIR/Expertise Dictation.app" ]]; then exit 71; fi
+if [[ "$FIXTURE_CASE" == stage-failure && "$last" == *".Expertise-Typer-install."* ]]; then exit 70; fi
+if [[ "$FIXTURE_CASE" == post-verify-failure && "$last" == "$INSTALL_DIR/Expertise Typer.app" ]]; then exit 71; fi
 ''')
     mock(mocks, "ditto", '''if [[ "$FIXTURE_CASE" == backup-failure && "$1" == -c ]]; then exit 72; fi
 exec /usr/bin/ditto "$@"
 ''')
-    mock(mocks, "mv", '''if [[ "$FIXTURE_CASE" == move-failure && "$1" == *".Expertise-Dictation-install."*"/Expertise Dictation.app" ]]; then exit 73; fi
+    mock(mocks, "mv", '''if [[ "$FIXTURE_CASE" == move-failure && "$1" == *".Expertise-Typer-install."*"/Expertise Typer.app" ]]; then exit 73; fi
 exec /bin/mv "$@"
 ''')
     sentinel = case / "existing-user-data.txt"
@@ -66,13 +70,13 @@ exec /bin/mv "$@"
                SKIP_BUILD="1", FIXTURE_CASE=name)
     run = subprocess.run([str(ROOT / "scripts/install-local.sh")], env=env,
                          capture_output=True, text=True)
-    success = name in ("fresh", "legacy", "dual")
+    success = name in ("fresh", "legacy", "dictation", "typer", "dual", "triple")
     assert (run.returncode == 0) == success, (name, run.stdout, run.stderr)
     assert hashlib.sha256(sentinel.read_bytes()).hexdigest() == digest
     assert (app / "marker.txt").read_text() == "new"
     if success:
         assert (dest / "marker.txt").read_text() == "new"
-        assert not legacy.exists()
+        assert not legacy.exists() and not previous.exists()
         archives = list(backup.glob("*.zip"))
         assert len(archives) == len(before), (name, archives)
         for previous, marker in before.items():
@@ -81,16 +85,17 @@ exec /bin/mv "$@"
     else:
         for previous, marker in before.items():
             assert (installed / previous / "marker.txt").read_text() == marker, (name, previous)
-        if "Expertise Dictation.app" not in before:
+        if "Expertise Typer.app" not in before:
             assert not dest.exists()
-    assert not list(installed.glob(".Expertise-Dictation-install*")), name
+    assert not list(installed.glob(".Expertise-*-install*")), name
     print("PASS isolated installer:", name)
 
 
 def main():
     with tempfile.TemporaryDirectory(prefix="expertise-installer-fixtures-") as temporary:
-        for name in ("fresh", "legacy", "dual", "running", "wrong-source", "stage-failure",
-                     "backup-failure", "move-failure", "post-verify-failure"):
+        for name in ("fresh", "legacy", "dictation", "typer", "dual", "triple", "running",
+                     "wrong-source", "wrong-previous", "stage-failure", "backup-failure",
+                     "move-failure", "post-verify-failure"):
             run_case(Path(temporary), name)
     print("All installer fixtures passed. Real app, user data, signing, and installations were untouched.")
 

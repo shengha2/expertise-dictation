@@ -9,7 +9,7 @@ enum InsertionHostTest {
     static let allowedBundle = "com.google.Chrome"
 
     static func text(for scenario: Scenario) -> String {
-        if scenario == .short { return "Expertise Dictation insertion test. This draft remains unsent." }
+        if scenario == .short { return "Expertise Typer insertion test. This draft remains unsent." }
         return (1...80).map {
             "Section \($0): Preserve every word in this unsent insertion test. 这段文字也需要完整保留。"
         }.joined(separator: "\n\n") + "\nEND OF UNSENT INSERTION TEST"

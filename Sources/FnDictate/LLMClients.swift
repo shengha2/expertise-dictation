@@ -37,7 +37,13 @@ extension LLMError {
 
 protocol LLMClient {
     var name: String { get }
+    /// Opt in only when overlapping requests on the same client are independent and safe.
+    var supportsConcurrentRequests: Bool { get }
     func complete(system: String, user: String, maxTokens: Int, timeout: TimeInterval) async throws -> String
+}
+
+extension LLMClient {
+    var supportsConcurrentRequests: Bool { false }
 }
 
 enum LLMFactory {
@@ -109,6 +115,7 @@ struct AnthropicClient: LLMClient {
     let baseURL: String
     let model: String
     var name: String { model }
+    var supportsConcurrentRequests: Bool { true }
 
     func complete(system: String, user: String, maxTokens: Int, timeout: TimeInterval) async throws -> String {
         let url = try APIEndpoint.url(baseURL: baseURL, path: "/v1/messages")
@@ -155,6 +162,7 @@ struct OpenAIChatClient: LLMClient {
     var priority: Bool = false
     var session: URLSession = llmSession
     var name: String { model }
+    var supportsConcurrentRequests: Bool { true }
 
     func complete(system: String, user: String, maxTokens: Int, timeout: TimeInterval) async throws -> String {
         let url = try APIEndpoint.url(baseURL: baseURL, path: "/v1/chat/completions")

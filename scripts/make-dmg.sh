@@ -9,14 +9,14 @@ DIST="${DIST_DIR:-$ROOT/dist}"
 MODE="${1:---local}"
 fail() { echo "error: $*" >&2; exit 1; }
 [[ "$MODE" == "--local" || "$MODE" == "--notarized" || "$MODE" == "--release" ]] || fail "usage: $0 [--local|--notarized|--release]"
-[[ -d "$BUILD/Expertise Dictation.app" ]] || fail "build first: scripts/build.sh"
+[[ -d "$BUILD/Expertise Typer.app" ]] || fail "build first: scripts/build.sh"
 BUILD="$(cd "$BUILD" && pwd)"
-SOURCE_APP="$BUILD/Expertise Dictation.app"
+SOURCE_APP="$BUILD/Expertise Typer.app"
 codesign --verify --deep --strict --all-architectures "$SOURCE_APP"
 INFO="$SOURCE_APP/Contents/Info.plist"
 [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$INFO")" == com.hao.fndictate ]] || fail "unexpected bundle identifier; refusing to package another app"
 [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$INFO")" == FnDictate ]] || fail "unexpected bundle executable"
-[[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$INFO")" == 'Expertise Dictation' ]] || fail "unexpected product name; rebuild the renamed app first"
+[[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$INFO")" == 'Expertise Typer' ]] || fail "unexpected product name; rebuild the renamed app first"
 for usage_key in NSMicrophoneUsageDescription NSListenEventUsageDescription; do
   [[ -n "$(/usr/libexec/PlistBuddy -c "Print :$usage_key" "$INFO" 2>/dev/null || true)" ]] || fail "missing $usage_key permission explanation"
 done
@@ -45,7 +45,7 @@ esac
 DOCUMENTATION="$(python3 "$ROOT/scripts/public_documents.py")"
 mkdir -p "$DIST"
 DIST="$(cd "$DIST" && pwd)"
-NAME="Expertise-Dictation-$VERSION"
+NAME="Expertise-Typer-$VERSION"
 [[ "$MODE" == "--local" ]] && NAME="$NAME-local"
 [[ "$MODE" == "--notarized" ]] && NAME="$NAME-notarized-manual"
 DMG="$DIST/$NAME.dmg"
@@ -85,7 +85,7 @@ fi
 STAGE="$(mktemp -d "$DIST/.expertise-dictation-package.XXXXXX")"
 trap 'rm -rf "$STAGE"; rmdir "$LOCK" 2>/dev/null || true' EXIT
 mkdir -p "$STAGE/image"
-APP="$STAGE/image/Expertise Dictation.app"
+APP="$STAGE/image/Expertise Typer.app"
 ditto "$SOURCE_APP" "$APP"
 
 notarize() {
@@ -112,8 +112,8 @@ if [[ "$MODE" != "--local" ]]; then
   [[ "$(plutil -convert json -o - "$STAGE/entitlements.plist")" == '{"com.apple.security.device.audio-input":true}' ]] || fail "unexpected release entitlements; expected Audio Input only"
   LOGS="$DIST/notary/$NAME-$(date -u +%Y%m%dT%H%M%SZ)-$$"
   mkdir -p "$LOGS"
-  ditto -c -k --keepParent "$APP" "$STAGE/Expertise-Dictation.zip"
-  notarize "$STAGE/Expertise-Dictation.zip" app
+  ditto -c -k --keepParent "$APP" "$STAGE/Expertise-Typer.zip"
+  notarize "$STAGE/Expertise-Typer.zip" app
   xcrun stapler staple "$APP"
   xcrun stapler validate "$APP"
   codesign --verify --deep --strict --all-architectures "$APP"
@@ -136,9 +136,11 @@ Local ad-hoc rebuilds can require permission grants again."
 fi
 
 ln -s /Applications "$STAGE/image/Applications"
+GUIDE="$STAGE/image/Guide and licenses"
+mkdir -p "$GUIDE"
 while IFS= read -r document; do
-  mkdir -p "$STAGE/image/$(dirname "$document")"
-  cp "$ROOT/$document" "$STAGE/image/$document"
+  mkdir -p "$GUIDE/$(dirname "$document")"
+  cp "$ROOT/$document" "$GUIDE/$document"
 done <<< "$DOCUMENTATION"
 # Include only explicitly reviewed evidence, never an entire diagnostics folder.
 # Paths in this optional allowlist are relative to docs/ (for example,
@@ -148,18 +150,19 @@ if [[ -f "$ROOT/docs/distribution-evidence.txt" ]]; then
     [[ -z "$evidence" || "$evidence" == \#* ]] && continue
     [[ "$evidence" =~ ^evidence/[A-Za-z0-9_./-]+$ && "$evidence" != *..* ]] || fail "unsafe evidence path in docs/distribution-evidence.txt"
     [[ -f "$ROOT/docs/$evidence" && ! -L "$ROOT/docs/$evidence" ]] || fail "missing or linked evidence file: $evidence"
-    mkdir -p "$STAGE/image/docs/$(dirname "$evidence")"
-    cp "$ROOT/docs/$evidence" "$STAGE/image/docs/$evidence"
+    mkdir -p "$GUIDE/docs/$(dirname "$evidence")"
+    cp "$ROOT/docs/$evidence" "$GUIDE/docs/$evidence"
   done < "$ROOT/docs/distribution-evidence.txt"
 fi
-cat > "$STAGE/image/Read me first.txt" <<TXT
-Expertise Dictation $VERSION
+cat > "$GUIDE/Read me first.txt" <<TXT
+Expertise Typer $VERSION
 
 INSTALL
-1. Quit Expertise Dictation or an older FnDictate copy if it is running.
-2. Drag Expertise Dictation into Applications, then open that exact copy.
-   If upgrading from FnDictate, keep the old app closed and move its app bundle
-   aside after the new copy works. Keep its Application Support data unchanged.
+1. Quit Expertise Typer, Expertise Dictation, or FnDictate if it is running.
+2. Drag Expertise Typer into Applications, then open that exact copy.
+   If upgrading from Expertise Dictation or FnDictate, keep the old app closed
+   and move its app bundle aside after the new copy works. Your dictionary,
+   settings, keys and history use the same profile and stay available.
 $INSTALL_NOTE
 3. Follow the app's guided permissions, microphone, shortcut, and practice checks.
    $CONNECTION_NOTE
@@ -168,7 +171,7 @@ $INSTALL_NOTE
 Do not disable Gatekeeper or remove quarantine attributes to install this app.
 TXT
 CANDIDATE="$STAGE/$NAME.dmg"
-hdiutil create -volname "Expertise Dictation $VERSION" -srcfolder "$STAGE/image" -format UDZO -fs HFS+ "$CANDIDATE" >/dev/null
+"$ROOT/scripts/create-installer-image.sh" "$STAGE/image" "$CANDIDATE" "$VERSION"
 if [[ "$MODE" != "--local" ]]; then
   codesign --timestamp --sign "$SIGN_IDENTITY" "$CANDIDATE"
   codesign --verify --strict "$CANDIDATE"
@@ -181,14 +184,14 @@ hdiutil verify "$CANDIDATE" >/dev/null
 HASH="$(shasum -a 256 "$CANDIDATE" | awk '{print $1}')"
 printf '%s  %s\n' "$HASH" "$NAME.dmg" > "$STAGE/$NAME.dmg.sha256"
 cat > "$STAGE/$NAME-release.txt" <<TXT
-Expertise Dictation $VERSION
+Expertise Typer $VERSION
 Status: $STATUS
 Service mode: $SERVICE_MODE
 Created (UTC): $(date -u +%Y-%m-%dT%H:%M:%SZ)
 Architectures: $(lipo -archs "$APP/Contents/MacOS/FnDictate")
 Bundle identifier: $(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Contents/Info.plist")
 SHA-256: $HASH
-Usage guide: MINT.md (included in the disk image)
+Usage guide: Guide and licenses/MINT.md (included in the disk image)
 Documentation (included in the disk image):
 $DOCUMENTATION
 TXT

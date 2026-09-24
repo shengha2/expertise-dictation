@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "candidate": "B6 final guard focused provider checks",
+  "binarySHA256": "0c33f246fcdbd2066129e56dfb87c02f1b4f95af628376e463ba76e26ab00402",
+  "promptSHA256": {
+    "full-rewrite.txt": "5f0ec44768bb435f737b20d2d50db6d2a0e9b2194f50496a90465c7a77753499",
+    "light-cleanup.txt": "aa4a5955388c1080e7083e1123eb5f37d44e50dbf2ecbbc55126a01ca61e0275",
+    "punctuation.txt": "327b25128ac05aef123514673e51bb5657c26ee1ea9a89daf9cfe66a7ee36c41",
+    "rewrite-verifier.txt": "e4ad28ea499b70af0ceb9ed69b1e86e5f3741adc9ddbf513f5478d962f3a320e"
+  },
+  "datasetSHA256": "a18e55ba9ea5f844a54eddcf318b2ada2815ea7a7ce2336b190ccb1ca6c3c4e4",
+  "syntheticDataOnly": true,
+  "results": {
+    "protectedFactsPreserved": 3,
+    "total": 3,
+    "acceptedCleanups": 2,
+    "guardFallbacks": 1,
+    "providerFallbacks": 0,
+    "errors": 0
+  },
+  "cases": [
+    {
+      "id": "long-email-light-guard-light",
+      "input": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+      "output": "Hi Maya, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want:\n- open the app from a fresh download without touching the security settings\n- dictate a short message into the browser and make sure it lands in the selected field\n- dictate a longer message while switching desktops to see whether the small recording bar stays visible\n\nIf any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+      "mode": "light",
+      "criteria": [
+        "Readable email with spoken greeting and closing, logical paragraphs, and three distinct demo-check items.",
+        "Preserve every qualification: tested machine counts, Intel untested, dictionary survived rather than recreated.",
+        "Fresh download without security changes; browser selected-field insert; long desktop-switch recording bar.",
+        "Failure record versus selective retries, existing link versus unverified automatic update, manual-install demo allowance.",
+        "No customer audio; synthetic shopping list; claims must match checks; no invented promise or blanket release blocker."
+      ],
+      "explicitSyntheticStyleOverride": "",
+      "protectedFactsPreserved": true,
+      "cleanupAccepted": true,
+      "reviewNote": "Keeps every qualification and number, formats the three checks and removes the additional-point marker. The dictionary false-start wording remains; this is not a claim of perfect polishing.",
+      "sectionChecks": [
+        {
+          "accepted": true,
+          "original": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+          "proposed": "Hi Maya, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want:\n- open the app from a fresh download without touching the security settings\n- dictate a short message into the browser and make sure it lands in the selected field\n- dictate a longer message while switching desktops to see whether the small recording bar stays visible\n\nIf any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+          "reason": "ok",
+          "section": 1
+        }
+      ],
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "elapsedSeconds": 2.711613625
+    },
+    {
+      "id": "retained-marker-light",
+      "input": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, I mean the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. Actually, one more thing: Keep one backup and test two laptops.",
+      "output": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, I mean the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. Actually, one more thing: Keep one backup and test two laptops.",
+      "mode": "light",
+      "criteria": [
+        "Preserve the real one-backup, two-laptop and 250-dollar quantities; keep all substantive details.",
+        "Repair the explicit false start only after the bounded semantic verifier approves it.",
+        "Respect the requested retained/removed discourse-marker preference; this is an explicit synthetic style override."
+      ],
+      "explicitSyntheticStyleOverride": "Keep the sentence-introducing words One more thing exactly, followed by a colon. Apply ordinary Light cleanup elsewhere and keep all factual details.",
+      "protectedFactsPreserved": true,
+      "cleanupAccepted": false,
+      "reviewNote": "A small false-start repair reached semantic verification, which rejected it. The entire original was returned with all counts, facts and the marker intact. Safe fallback; requested cleanup was not delivered.",
+      "sectionChecks": [
+        {
+          "accepted": false,
+          "original": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, I mean the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. Actually, one more thing: Keep one backup and test two laptops.",
+          "proposed": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. One more thing: keep one backup and test two laptops.",
+          "reason": "Light false-start semantic check rejected",
+          "section": 1
+        }
+      ],
+      "guardFallbacks": 1,
+      "providerFallbacks": 0,
+      "error": null,
+      "elapsedSeconds": 2.1073037080000003
+    },
+    {
+      "id": "removed-marker-light",
+      "input": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, I mean the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. Actually, one more thing: Keep one backup and test two laptops.",
+      "output": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, I mean the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. Keep one backup and test two laptops.",
+      "mode": "light",
+      "criteria": [
+        "Preserve the real one-backup, two-laptop and 250-dollar quantities; keep all substantive details.",
+        "Repair the explicit false start only after the bounded semantic verifier approves it.",
+        "Respect the requested retained/removed discourse-marker preference; this is an explicit synthetic style override."
+      ],
+      "explicitSyntheticStyleOverride": "Omit only the introductory discourse phrase One more thing and its Actually filler. Apply ordinary Light cleanup elsewhere and keep all factual details, including every count.",
+      "protectedFactsPreserved": true,
+      "cleanupAccepted": true,
+      "reviewNote": "Removes the requested discourse marker and retains one backup, two laptops and 250 dollars. Other false-start wording remains; this checks quantity preservation, not a perfect rewrite.",
+      "sectionChecks": [
+        {
+          "accepted": true,
+          "original": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, I mean the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. Actually, one more thing: Keep one backup and test two laptops.",
+          "proposed": "We reviewed the release with Maya and kept all of the original notes. The thing about the dictionary, I mean the important part, is that existing entries survived the upgrade. Keep the invoice at 250 dollars and do not publish before Friday. Preserve the appendix and bibliography. Keep one backup and test two laptops.",
+          "reason": "ok",
+          "section": 1
+        }
+      ],
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "elapsedSeconds": 1.1245164170000006
+    }
+  ],
+  "review": {
+    "reviewer": "Codex agent",
+    "limits": [
+      "Each case executed once; no selective retries.",
+      "Two cases use declared synthetic style instructions to request retaining or omitting the discourse marker. Only process-local test preferences are used.",
+      "All three preserve protected facts; one keeps raw after a semantic rejection. The accepted outputs still retain some false-start wording, so this is not a 3/3 cleanup quality claim.",
+      "B5 is the complete 47-case provider study. These three focused B6 checks do not replace or relabel that study.",
+      "No microphone, long-recording or native insertion claim."
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "testedUTC": "2026-09-24T22:10:42.566975+00:00",
+  "build": "1.1.11 arm64 debug UI candidate; before final IDs/prompt-row placement and guard refinement",
+  "isolation": "Separate bundle com.hao.expertisetyper.qa.1111; --ui-test disables global shortcut, audio, network providers, updater; 28 synthetic local history rows; production data untouched",
+  "checks": [
+    {
+      "name": "Home prompt link opens actual editable public Full prompt",
+      "passed": true
+    },
+    {
+      "name": "Edit custom prompt then Save and reopen preserves exact instructions",
+      "passed": true
+    },
+    {
+      "name": "Reset changes editor, but saved custom instructions persist until Save",
+      "passed": true
+    },
+    {
+      "name": "Save after Reset stores empty override and Home shows default",
+      "passed": true
+    },
+    {
+      "name": "Dashboard initial 7-day totals match synthetic fixture:336words,224recordingseconds,28processingseconds,196savedsconds",
+      "passed": true
+    },
+    {
+      "name": "Today filter shows12words,8srecording,7ssaving,1savedrecord",
+      "passed": true
+    },
+    {
+      "name": "How estimated popover opens with calculation, exclusions and history limit; close works",
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "Computer-use clipboard/AX calls occasionally returned stale-state/timeouts; state was re-read before subsequent actions. set_value used to verify text editing.",
+    "Screenshots are isolated test data, not user history. Native general app behavior and microphone were not exercised by this UI preview."
+  ],
+  "finalUIFollowUp": {
+    "candidate": "signed universal candidate1, isolated ad-hoc QA copy",
+    "checks": [
+      "Home prompt shortcut appears before dashboard",
+      "Metric and filter accessibility identifiers remain distinct",
+      "Select All and keyboard-style typing replaced the prompt field text exactly",
+      "Escape closed the edited sheet; default prompt remained active"
+    ],
+    "passed": true
+  }
+}

@@ -1,19 +1,19 @@
-# Expertise Dictation — usage guide
+# Expertise Typer — usage guide
 
-1.1.10 personal connection guide · macOS 14 or later · Apple silicon and Intel
+1.1.11 personal connection guide · macOS 14 or later · Apple silicon and Intel
 
 **Connection:** This release uses your own provider API key. Existing saved keys carry over; new users add a key in Connection settings. Provider charges apply. The free hosted service is not included. Download a published installer from the [releases page](https://github.com/shengha2/expertise-dictation-releases/releases), and check its release notes and installer receipt for the exact validation and Apple notarization status.
 
-Expertise Dictation types your speech where you are writing. It uses OpenAI or your selected provider, independently of Apple's built-in Dictation.
+Expertise Typer types your speech where you are writing. It uses OpenAI or your selected provider, independently of Apple's built-in Dictation.
 
 ## Install or update
 
 1. Download the DMG from the release page.
 2. Finish any active dictation and quit the older app.
-3. Open the DMG and drag **Expertise Dictation** into **Applications**. Replace the older copy when asked.
+3. Open the DMG and drag **Expertise Typer** into **Applications**. Replace the older copy when asked.
 4. Open the copy in Applications. Look for its microphone icon in the menu bar.
 
-The app keeps the original bundle identity, so upgrades preserve preferences, saved keys, dictionary, history and recovery recordings. If an old **FnDictate** copy is still running, quit it before opening Expertise Dictation.
+Expertise Typer is the new name for **Expertise Dictation**. The app keeps the original bundle identity, so upgrades preserve preferences, saved keys, dictionary, history and recovery recordings. Quit any older **Expertise Dictation** or **FnDictate** copy before opening Expertise Typer. A manual drag into Applications can leave an app with the old name alongside the new one; after confirming the new copy works and your dictionary is present, move the older app bundle to Trash. Keep its Application Support data. An automatic update may keep the existing filename **Expertise Dictation.app** while the app itself shows **Expertise Typer** and the new version; use Home’s version number to verify the upgrade.
 
 Choose **Check for Updates…** in the menu bar to look immediately. Automatic checking and installation are in **Preferences → More options → Updates**. Version 1.1.9 defaults to hourly checks; an existing explicit update preference is preserved. Earlier versions keep their own schedule until upgraded. Updates are checked periodically, not delivered instantly by push notifications.
 
@@ -25,6 +25,14 @@ A new app must actually be published in the signed update feed before anyone can
 
 Published distribution builds must be signed with Developer ID and notarized by Apple. A local source build may still be blocked by macOS or need renewed permissions. Do not disable Gatekeeper globally. [Apple explains the app-specific installation choices](https://support.apple.com/102445).
 
+## Your usage dashboard
+
+Home shows estimated time saved, words written, time spent dictating and speaking speed. Choose Today, Last 7 days, Last 30 days or Saved history. The daily chart shows saved words on each day.
+
+Time saved compares the output with typing at an assumed **45 words per minute**, then subtracts actual recording and processing time. It is an estimate, not a measurement of your typing speed. Slower dictations reduce the total; an overall negative result is shown as extra time. Entries with missing or invalid timing cannot support a saving estimate. Click **How estimated?** for the calculation.
+
+These totals use history still saved on this Mac (up to 500 entries), not lifetime usage. Clearing history also clears the corresponding dashboard totals. Word boundaries are estimated for multilingual text. Later editing and manual copying time are not measured. Nothing is uploaded for this dashboard.
+
 ## Set up once
 
 Setup follows five steps. Each step checks the thing it asks you to do. **Set up later** leaves setup unfinished so you can return through **Check setup**.
@@ -33,9 +41,9 @@ Before the practice dictation, open **Connection settings**, paste your provider
 
 ### 1. Permissions
 
-Click **Allow microphone**, then Allow in the macOS prompt. If it was previously denied, use **Open Microphone Settings** and enable Expertise Dictation under **Privacy & Security → Microphone**.
+Click **Allow microphone**, then Allow in the macOS prompt. If it was previously denied, use **Open Microphone Settings** and enable Expertise Typer under **Privacy & Security → Microphone**.
 
-For typing and the shortcut, use **Open Accessibility Settings** and enable Expertise Dictation under **Privacy & Security → Accessibility**. This is the page inside Privacy & Security, not the main Accessibility section. If the app is absent, use **+**, select the app in Applications and add it. Authenticate if macOS requests it.
+For typing and the shortcut, use **Open Accessibility Settings** and enable Expertise Typer under **Privacy & Security → Accessibility**. This is the page inside Privacy & Security, not the main Accessibility section. If the app is absent, use **+**, select the app in Applications and add it. Authenticate if macOS requests it.
 
 ![Example microphone permission guide](docs/images/1.1.9/guide-microphone-large.jpg)
 
@@ -108,7 +116,9 @@ For an email address, spell the name clearly: “S A R A at gmail dot com.” Fu
 
 ### Edit or inspect the prompts
 
-Open **Preferences → Edit rewrite prompt…**. Edit the Full rewrite style, then click **Save**. Cancel discards the draft. **Restore default** changes the draft; Save applies it. Changes affect the next dictation, so an ongoing recording keeps the prompt it started with.
+Open **Home → View and edit prompt…**, or **Preferences → Rewrite → View and edit prompt…**. Edit the Full rewrite instructions, then click **Save**. Cancel discards the draft. **Reset to default** restores the current built-in instructions in the editor; click Save to apply them. Resetting the prompt does not change your dictionary, languages, connection or other style preferences. Changes affect the next dictation, so an ongoing recording keeps the prompt it started with.
+
+![Editing and resetting the Full rewrite prompt](docs/images/1.1.11/prompt-reset.png)
 
 **View all public prompt files** opens the bundled text files for Full rewrite, Light cleanup, punctuation and the meaning checker. These are also in the [public source repository](https://github.com/shengha2/expertise-dictation/tree/main/prompts). Dynamic dictionary, language and insertion context are assembled by the open source code. Editable style instructions do not disable fidelity checks.
 

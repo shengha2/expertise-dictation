@@ -7,6 +7,7 @@ enum CleanupRegressionTests {
     static func run(check: (String, Bool, String) -> Void) {
         EmailAddressRegressionTests.run(check: check)
         ReadabilityRegressionTests.run(check: check)
+        CorrectionGuardRegressionTests.run(check: check)
         let faithful: [(String, String)] = [
             ("Um, please please send the draft to Mira.", "Please send the draft to Mira."),
             ("Can you can you call this Expertise Dictation?", "Can you call this Expertise Dictation?"),

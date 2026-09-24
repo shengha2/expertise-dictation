@@ -244,8 +244,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         appMenu.addItem(withTitle: "Preferences…", action: #selector(openSettings), keyEquivalent: ",").target = self
         appMenu.addItem(withTitle: "Check for Updates…", action: #selector(checkForUpdates), keyEquivalent: "").target = self
         appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: "Hide Expertise Dictation", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
-        appMenu.addItem(withTitle: "Quit Expertise Dictation", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(withTitle: "Hide Expertise Typer", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
+        appMenu.addItem(withTitle: "Quit Expertise Typer", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         appItem.submenu = appMenu
         main.addItem(appItem)
 
@@ -295,10 +295,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         case .recording: name = "waveform"
         case .finishing, .processing: name = "sparkles"
         }
-        let image = NSImage(systemSymbolName: name, accessibilityDescription: "Expertise Dictation")
+        let image = NSImage(systemSymbolName: name, accessibilityDescription: "Expertise Typer")
         image?.isTemplate = true
         button.image = image
-        button.toolTip = "Expertise Dictation — \(controller.statusLine)"
+        button.toolTip = "Expertise Typer — \(controller.statusLine)"
     }
 
     func menuNeedsUpdate(_ menu: NSMenu) {
@@ -329,7 +329,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         translateStart.isEnabled = controller.phase == .idle
         menu.addItem(translateStart)
         menu.addItem(.separator())
-        let home = NSMenuItem(title: "Open Expertise Dictation", action: #selector(openHome), keyEquivalent: "")
+        let home = NSMenuItem(title: "Open Expertise Typer", action: #selector(openHome), keyEquivalent: "")
         home.target = self
         menu.addItem(home)
         if AppUpdater.shared.updateReady && InlineUpdateDrafts.shared.hasUnsavedChanges {
@@ -341,7 +341,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
         updates.target = self
         menu.addItem(updates)
         menu.addItem(.separator())
-        let quit = NSMenuItem(title: "Quit Expertise Dictation", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Quit Expertise Typer", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quit)
     }
 
@@ -461,7 +461,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             Log.error("Launch at login failed: \(error)")
             let alert = NSAlert()
             alert.messageText = "Could not change Launch at Login"
-            alert.informativeText = "\(error.localizedDescription)\n\nMove Expertise Dictation to the Applications folder and try again."
+            alert.informativeText = "\(error.localizedDescription)\n\nMove Expertise Typer to the Applications folder and try again."
             alert.runModal()
         }
     }
@@ -488,7 +488,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 920, height: min(720, (NSScreen.main?.visibleFrame.height ?? 820) - 24)),
                                   styleMask: [.titled, .closable, .resizable],
                                   backing: .buffered, defer: false)
-            window.title = "Welcome to Expertise Dictation"
+            window.title = "Welcome to Expertise Typer"
             window.titlebarAppearsTransparent = true
             window.titleVisibility = .hidden
             window.backgroundColor = NSColor(name: nil) { appearance in
@@ -528,7 +528,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWind
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 820, height: 640),
                                   styleMask: [.titled, .closable, .miniaturizable, .resizable],
                                   backing: .buffered, defer: false)
-            window.title = "Expertise Dictation"
+            window.title = "Expertise Typer"
             window.titlebarAppearsTransparent = true
             window.titleVisibility = .hidden
             window.backgroundColor = NSColor(name: nil) { appearance in

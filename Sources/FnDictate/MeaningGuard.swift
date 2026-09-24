@@ -8,6 +8,7 @@ enum MeaningGuard {
         let accepted: Bool
         let ratio: Double
         let reason: String
+        var canVerifyFalseStart = false
     }
 
     static let fillerTokens: Set<String> = [
@@ -18,11 +19,18 @@ enum MeaningGuard {
 
     // These are comparison-only repairs, never edits to the user's transcript. Each
     // correction has an explicit marker; unresolved alternatives stay in the source.
+    // A non-Han word boundary keeps adjacent Chinese prose out of a corrected name,
+    // while retaining accented, Cyrillic and other alphabetic names supported before.
+    private static let correctionWord = #"[\p{L}\p{N}&&[^\p{Han}]]"#
     private static let repairs: [(NSRegularExpression, String)] = [
-        (try! NSRegularExpression(pattern: #"(?i)\b([\p{L}\p{N}]+)[\s,?.!—–-]+(?:no[\s,]+)+not\s+\1\s*[,，—–]\s*([\p{L}\p{N}]+)\b"#), "$2"),
-        (try! NSRegularExpression(pattern: #"(?i)\b([\p{L}\p{N}]+)[\s,—–-]+no\s*,?\s*(?:wait|make\s+that)\s*[,—–-]?\s*([\p{L}\p{N}]+)\b"#), "$2"),
-        (try! NSRegularExpression(pattern: #"(?i)\b([\p{L}\p{N}]+)\s*[,—–]\s*sorry(?:\s+i\s+mean)?\s*[,—–]\s*([\p{L}\p{N}]+)\b"#), "$2"),
+        (try! NSRegularExpression(pattern: #"(?i)(?<!\#(correctionWord))(\#(correctionWord)+)[\s,?.!—–-]+(?:no[\s,]+)+not\s+\1\s*[,，—–]\s*(\#(correctionWord)+)(?!\#(correctionWord))"#), "$2"),
+        (try! NSRegularExpression(pattern: #"(?i)(?<!\#(correctionWord))(\#(correctionWord)+)[\s,—–-]+no\s*,?\s*(?:wait|make\s+that)\s*[,—–-]?\s*(\#(correctionWord)+)(?!\#(correctionWord))"#), "$2"),
+        (try! NSRegularExpression(pattern: #"(?i)(?<!\#(correctionWord))(\#(correctionWord)+)\s*[,，—–]\s*sorry(?:\s+i\s+mean)?\s*[,，—–]\s*(\#(correctionWord)+)(?!\#(correctionWord))"#), "$2"),
         (try! NSRegularExpression(pattern: #"(周[一二三四五六日天])\s*[,，]\s*不[对對]\s*[,，]\s*(周[一二三四五六日天])"#), "$2"),
+        // A duration correction must name the same unit twice and include both
+        // separators around its explicit correction marker. Independent durations
+        // and negations outside that exact span remain in the comparison.
+        (try! NSRegularExpression(pattern: #"([零〇一二三四五六七八九十百千万兩两0-9]+)(周|週|天|小时|小時|分钟|分鐘|个月|個月|年)\s*[,，]\s*不[对對]\s*[,，]\s*([零〇一二三四五六七八九十百千万兩两0-9]+)\2"#), "$3$2"),
         // A common ASR omission is both commas around an explicit weekday correction.
         // Require a following action; a question or comparison of weekday arrangements
         // ("周二不对吗", "周二不对周三的安排也有问题") is not this repair.
@@ -30,6 +38,8 @@ enum MeaningGuard {
     ]
     private static let protectedValues = try! NSRegularExpression(
         pattern: #"(?i)[+-]?[0-9]+(?:[.,:/-][0-9]+)*|\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)\b"#)
+    private static let durationValues = try! NSRegularExpression(
+        pattern: #"[零〇一二三四五六七八九十百千万兩两0-9]+(?:周|週|天|小时|小時|分钟|分鐘|个月|個月|年)"#)
     private static let negations = try! NSRegularExpression(
         pattern: #"(?i)\b(?:no|not|never|neither|nor|without|cannot|[a-z]+n['’]t)\b|[不沒没無无未別别]"#)
     private static let currencies = try! NSRegularExpression(pattern: #"(?i)[$€£¥]|\b(?:dollars?|euros?|pounds?|yen|yuan|usd|eur|gbp|jpy|cny|cad|aud)\b"#)
@@ -45,6 +55,38 @@ enum MeaningGuard {
         repairs.reduce(text) { value, repair in
             repair.0.stringByReplacingMatches(in: value, range: NSRange(value.startIndex..., in: value), withTemplate: repair.1)
         }
+    }
+
+    // "One more thing:" is a sentence-introducing discourse marker, not an amount.
+    // Require a statement boundary and a colon; "one more thing is missing" and
+    // "please buy one more thing" remain ordinary content with a protected number.
+    private static let additionalPoint = try! NSRegularExpression(pattern: #"(?im)(^|[.!?][ \t]+|\n)(?:actually,[ \t]+)?one more thing[ \t]*:[ \t]*"#)
+    private static func withoutAdditionalPointMarker(_ text: String) -> String {
+        additionalPoint.stringByReplacingMatches(in: text, range: NSRange(text.startIndex..., in: text), withTemplate: "$1")
+    }
+    private static func retainsAdditionalPointPhrase(_ text: String) -> Bool {
+        let words = tokens(DictationPunctuation.proseWithoutLiterals(text))
+        guard words.count >= 3 else { return false }
+        return (0...(words.count - 3)).contains { Array(words[$0..<($0 + 3)]) == ["one", "more", "thing"] }
+    }
+
+    // Used only by the optional discourse-marker comparison. A retained/rephrased
+    // marker's "one" must not stand in for a deleted real quantity such as "one
+    // backup". Preserve ordered numeric anchors and their next two content tokens.
+    // Conservative fallback is preferable when that surrounding context changes.
+    private static func numberContextSignature(_ text: String) -> [[String]] {
+        let grammar: Set<String> = ["a", "an", "the", "i", "we", "you", "it", "is", "are", "was", "were", "be", "been", "to", "of", "and", "that", "this", "there"]
+        let words = comparisonTokens(text).filter { !grammar.contains($0) }
+        return words.indices.compactMap { index in
+            guard !matches(protectedValues, in: words[index]).isEmpty else { return nil }
+            return Array(words[index..<min(words.count, index + 3)])
+        }
+    }
+
+    private static let falseStart = try! NSRegularExpression(pattern: #"(?i)[,，—–]\s*i\s+mean(?:\s*[,，]\s*|\s+)"#)
+    private static func hasExplicitFalseStart(_ text: String) -> Bool {
+        let prose = DictationPunctuation.proseWithoutLiterals(text)
+        return falseStart.firstMatch(in: prose, range: NSRange(prose.startIndex..., in: prose)) != nil
     }
 
     private static func collapseStutters(_ source: [String]) -> [String] {
@@ -130,9 +172,16 @@ enum MeaningGuard {
             return Verdict(accepted: false, ratio: 1, reason: "an email address changed")
         }
         let repaired = resolveExplicitCorrections(original)
-        let candidates = repaired == original ? [original] : [original, repaired]
+        let additionalPointRemoved = withoutAdditionalPointMarker(repaired)
+        var candidates = repaired == original ? [original] : [original, repaired]
+        // If the output kept the marker, its "one" must still match the marker's
+        // own "one", not compensate for a missing independent quantity elsewhere.
+        if additionalPointRemoved != repaired && !retainsAdditionalPointPhrase(cleaned) {
+            candidates.append(additionalPointRemoved)
+        }
         let b = comparisonTokens(cleaned)
         var best = Verdict(accepted: false, ratio: 1, reason: "output did not preserve the transcript")
+        var semanticCandidate: Verdict?
         for source in candidates {
             // A tiny edit ratio in a long paragraph must never excuse a changed amount,
             // reference code, or dropped negation. Ambiguous formatting safely keeps raw text.
@@ -140,6 +189,23 @@ enum MeaningGuard {
             let outputNumbers = matches(protectedValues, in: cleaned).map { smallNumbers[$0] ?? $0 }
             guard sourceNumbers == outputNumbers else {
                 best = Verdict(accepted: false, ratio: 1, reason: "a number changed"); continue
+            }
+            if source == additionalPointRemoved && source != repaired,
+               numberContextSignature(source) != numberContextSignature(cleaned) {
+                best = Verdict(accepted: false, ratio: 1, reason: "a number's context changed"); continue
+            }
+            // Chinese numerals are single-character tokens, so edit distance alone
+            // could excuse 八周 becoming 九周 after removing a correction marker.
+            // Keep every final duration, including independent repeated mentions.
+            func durationSignature(_ text: String) -> [String] {
+                matches(durationValues, in: text).map {
+                    $0.replacingOccurrences(of: "週", with: "周").replacingOccurrences(of: "時", with: "时")
+                        .replacingOccurrences(of: "鐘", with: "钟").replacingOccurrences(of: "個", with: "个")
+                        .replacingOccurrences(of: "兩", with: "两")
+                }
+            }
+            guard durationSignature(source) == durationSignature(cleaned) else {
+                best = Verdict(accepted: false, ratio: 1, reason: "a duration changed"); continue
             }
             func currencySignature(_ text: String) -> [String] {
                 matches(currencies, in: text).map { $0 == "dollar" || $0 == "dollars" ? "$" : $0 }
@@ -169,9 +235,7 @@ enum MeaningGuard {
                 // CJK is tokenized by character, so whole-word uniqueness is not inferred.
                 let grammar: Set<String> = ["a", "an", "the", "i", "we", "you", "it", "is", "are", "was", "were", "be", "been", "to", "of", "and", "that", "this", "there"]
                 let outputWords = Set(b)
-                guard !a.contains(where: { $0.count > 1 && !grammar.contains($0) && !outputWords.contains($0) }) else {
-                    best = Verdict(accepted: false, ratio: 1, reason: "a content word is missing"); continue
-                }
+                let missingContent = a.contains(where: { $0.count > 1 && !grammar.contains($0) && !outputWords.contains($0) })
                 // End-of-response truncation can affect a tiny fraction of a long section.
                 // Keep its final content tokens even when the global ratio would pass.
                 let ending = Array(a.suffix(min(3, a.count)))
@@ -185,6 +249,23 @@ enum MeaningGuard {
                 }
                 let dist = editDistance(a, b)
                 let ratio = Double(dist) / Double(a.count)
+                if missingContent {
+                    // The exact-word guard cannot judge a false-start repair such as
+                    // "the thing about X, I mean the important part". Never accept it
+                    // locally: permit a semantic check only for a small edit after all
+                    // protected facts and the complete ending passed their checks.
+                    let canVerify = hasExplicitFalseStart(source) && dist <= 12 &&
+                        ratio <= min(threshold, GuardStrictness.strict.threshold)
+                    best = Verdict(accepted: false, ratio: ratio, reason: "a content word is missing", canVerifyFalseStart: canVerify)
+                    // Each comparison spelling is an alternative, not an extra
+                    // requirement. A later optional discourse-marker removal may
+                    // fail its number check when the output retained that marker;
+                    // it must not erase an earlier fully checked eligible spelling.
+                    if canVerify, ratio < (semanticCandidate?.ratio ?? .infinity) {
+                        semanticCandidate = best
+                    }
+                    continue
+                }
                 let slack = a.count < 8 ? 0.15 : 0.0
                 let ok = ratio <= threshold + slack
                 let verdict = Verdict(accepted: ok, ratio: ratio, reason: ok ? "ok" : "changed \(Int(ratio * 100))% of content words")
@@ -192,6 +273,6 @@ enum MeaningGuard {
                 if ratio < best.ratio { best = verdict }
             }
         }
-        return best
+        return semanticCandidate ?? best
     }
 }

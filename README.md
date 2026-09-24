@@ -1,8 +1,10 @@
-# Expertise Dictation
+# Expertise Typer
 
 Open-source macOS dictation with a default Fn shortcut, multilingual speech, editable public prompts, and restrained rewriting. Requires macOS 14 or later. It does not use Apple's built-in Dictation.
 
-**The Mac release uses your own provider API key.** Existing personal connections carry over; new users add their key during setup. Provider charges apply. The free hosted service is deferred and is not included in this release. Published DMGs and their actual release status are in the [release repository](https://github.com/shengha2/expertise-dictation-releases/releases); the [1.1.10 validation report](docs/release-1.1.10.md) covers the first-recording microphone fix, and the [1.1.9 report](docs/release-1.1.9.md) records broader validation and remaining limitations. A source build is not proof of a tested public release.
+Previously **Expertise Dictation**. Version 1.1.11 introduces the Expertise Typer name while keeping the same app identity, dictionary, saved connection and update channel. Existing release URLs retain their original names.
+
+**The Mac release uses your own provider API key.** Existing personal connections carry over; new users add their key during setup. Provider charges apply. The free hosted service is deferred and is not included in this release. Published DMGs and their actual release status are in the [release repository](https://github.com/shengha2/expertise-dictation-releases/releases); the [1.1.11 report](docs/release-1.1.11.md) covers the new name, dashboard, prompts and list formatting; the [1.1.10 validation report](docs/release-1.1.10.md) covers the first-recording microphone fix, and the [1.1.9 report](docs/release-1.1.9.md) records broader validation and remaining limitations. A source build is not proof of a tested public release.
 
 ## Use it
 
@@ -22,7 +24,9 @@ Read [MINT — the usage guide](MINT.md) for setup, shortcuts, recovery, updates
 
 ## Public prompts and source
 
-The [prompt files](prompts/README.md), [mode design and research](docs/rewrite-design.md), and [synthetic evaluation cases](evals/rewrite-quality.json) are included. The app's **Edit rewrite prompt…** lets you save a personal Full style; **View all public prompt files** opens the bundled defaults. Meaning checks remain independent of style changes.
+The [prompt files](prompts/README.md), [mode design and research](docs/rewrite-design.md), and [synthetic evaluation cases](evals/rewrite-quality.json) are included. The app's **Home → View and edit prompt…** lets you save personal Full instructions; **Reset to default**, then Save, restores the current built-in prompt; **View all public prompt files** opens the bundled defaults. Meaning checks remain independent of style changes.
+
+Home also shows words, dictation time, speaking speed and estimated time saved, with daily activity. The estimate assumes 45 typing words per minute and subtracts recording and processing time; it uses the history still saved on this Mac.
 
 The source and project-owned prompts/assets are [MIT licensed](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md) preserve the licenses for Sparkle, Inter and the sound cues. Typeless and Wispr Flow informed interaction and rewriting research; their proprietary prompts and assets are not included.
 
@@ -46,9 +50,9 @@ scripts/test.sh                     # offline app checks
 `BUILD_DIR=/absolute/path` selects an isolated build directory. Source builds are ad-hoc signed unless `SIGN_IDENTITY` names your Developer ID certificate. They can need new Microphone and Accessibility grants. Do not disable Gatekeeper globally.
 
 ```sh
-"build/Expertise Dictation.app/Contents/MacOS/FnDictate" --selftest
-"build/Expertise Dictation.app/Contents/MacOS/FnDictate" --controller-selftest
-"build/Expertise Dictation.app/Contents/MacOS/FnDictate" --overlay-selftest
+"build/Expertise Typer.app/Contents/MacOS/FnDictate" --selftest
+"build/Expertise Typer.app/Contents/MacOS/FnDictate" --controller-selftest
+"build/Expertise Typer.app/Contents/MacOS/FnDictate" --overlay-selftest
 ```
 
 Offline controller and overlay checks do not prove live microphone, physical Fn, desktop switching, or paste behavior in a particular app. Real-provider evaluation requires your own configured credentials and may incur a charge; the evaluation script is dry-run by default. See [validation status](docs/release-1.1.9.md) for the measured scope and remaining release gates.

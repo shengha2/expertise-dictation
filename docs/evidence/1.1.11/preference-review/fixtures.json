@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "protocol": {
+    "createdBeforeExecutionUTC": "2026-09-24T22:06:32.398039+00:00",
+    "scope": "12 new synthetic clean-up challenges, Full and Light once each; raw input reference control. No personal transcripts, speech recognition or UI insertion.",
+    "sampling": "Purposive adversarial scenarios based on user preferences, not representative random sampling.",
+    "runsPerModePerCase": 1,
+    "selectiveRetryPolicy": "None; retain every output, fallback, error and timing.",
+    "judge": "Codex model-based qualitative review; not a blinded independent human study.",
+    "referenceInterpretation": "FreeFlow reference supports literal cleanup/instruction preservation; user additionally wants explicit lists and restrained Full rewriting.",
+    "referenceURL": "https://raw.githubusercontent.com/zachlatta/freeflow/main/Sources/PostProcessingService.swift",
+    "rubric": {
+      "factualFidelity": "Hard gate: retain every final substantive claim, qualifier, restriction, name and condition; no added fact/action. Abandoned wording of explicit self-corrections is not an independent fact. Raw reference always preserves literal content.",
+      "voiceTone": "1 strongly changes emotion/register; 3 usable but loses some voice; 5 preserves deliberate emphasis, directness and mixed-language tone.",
+      "fluency": "1 hard to read; 3 intelligible with awkwardness; 5 natural punctuation/grammar, especially Chinese and code boundaries.",
+      "structure": "1 obscures relationships; 3 readable but misses expected list/paragraph structure; 5 desired scanability with clear condition scope and no forced narrative list.",
+      "restraint": "1 executes/invents/sanitizes; 3 unnecessary paraphrase; 5 only justified cleanup, preserving clear phrasing.",
+      "preference": "Fidelity-failing alternatives cannot win. Among passing alternatives choose the most readable output consistent with the users conservative rewrite/tone/list preferences; ties allowed and justified. A raw win is valid."
+    }
+  },
+  "cases": [
+    {
+      "id": "handoff-two-asks",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "Two separate asks for tomorrow's handoff: export the signup numbers by region, and send a screenshot of the pricing page with the annual option selected. Please don't combine the numbers with the screenshot; Luca needs them as separate files.",
+      "context": {},
+      "preserveExactly": [
+        "Luca"
+      ],
+      "acceptanceCriteria": [
+        "Two list items: signup numbers by region; screenshot of pricing page with annual option selected.",
+        "Tomorrow deadline, separate-file requirement, and Luca remain; no invented owner or file format.",
+        "The final separate-file request applies to both deliverables, outside either bullet."
+      ],
+      "rawControl": "Two separate asks for tomorrow's handoff: export the signup numbers by region, and send a screenshot of the pricing page with the annual option selected. Please don't combine the numbers with the screenshot; Luca needs them as separate files."
+    },
+    {
+      "id": "bilingual-update-two-areas",
+      "split": "evaluation",
+      "languages": [
+        "en",
+        "zh-Hans"
+      ],
+      "input": "给客户的 update 我想分成两块，一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。另一块是 billing：月付价格没变，年付的折扣还没有确认。别写成我们已经决定涨价了。",
+      "context": {},
+      "preserveExactly": [
+        "update",
+        "billing"
+      ],
+      "acceptanceCriteria": [
+        "Two distinct areas become readable items while preserving their names and all qualifications.",
+        "Existing accounts still work; only new accounts reverify; monthly price unchanged; annual discount unconfirmed.",
+        "Do not assert a decided price increase; keep mixed-language voice."
+      ],
+      "rawControl": "给客户的 update 我想分成两块，一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。另一块是 billing：月付价格没变，年付的折扣还没有确认。别写成我们已经决定涨价了。"
+    },
+    {
+      "id": "shared-condition-and-exception",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "If Priya signs off and the sandbox test passes, here's the rollout checklist: copy the customer settings without copying their API keys; switch the test group to the new endpoint; ask Owen to watch the error rate for twenty minutes. If either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+      "context": {},
+      "preserveExactly": [
+        "Priya",
+        "API",
+        "Owen"
+      ],
+      "acceptanceCriteria": [
+        "Both approval and passed sandbox test gate all three checklist items; neither condition may attach only to one item.",
+        "Copy settings but not keys; only test group changes endpoint; Owen monitors twenty minutes.",
+        "If either condition fails do none; outside customers remain on old endpoint regardless."
+      ],
+      "rawControl": "If Priya signs off and the sandbox test passes, here's the rollout checklist: copy the customer settings without copying their API keys; switch the test group to the new endpoint; ask Owen to watch the error rate for twenty minutes. If either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way."
+    },
+    {
+      "id": "chinese-quotes-code",
+      "split": "evaluation",
+      "languages": [
+        "en",
+        "zh-Hans"
+      ],
+      "input": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+      "context": {},
+      "preserveExactly": [
+        "陈姐",
+        "README",
+        "`cache_key = \"a,b\"`",
+        "`tool --dry-run --limit=3`",
+        "“先别 merge，这不是 blocker”",
+        "“正在保存，请稍候”",
+        "“保存成功”"
+      ],
+      "acceptanceCriteria": [
+        "Preserve quoted wording and exact code characters; Chinese punctuation surrounds but never mutates code.",
+        "Speaker agrees with Chen; user message should say saving/wait, explicitly not saved-success.",
+        "Keep merge/blocker in English and distinguish quotation from an instruction to the cleanup model."
+      ],
+      "rawControl": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。"
+    },
+    {
+      "id": "mixed-self-correction",
+      "split": "evaluation",
+      "languages": [
+        "en",
+        "zh-Hans"
+      ],
+      "input": "这个 pilot 先跑六周，不对，八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Tuesday，sorry，Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+      "context": {},
+      "preserveExactly": [
+        "pilot",
+        "USD 20,000",
+        "Wednesday afternoon",
+        "Tuesday"
+      ],
+      "acceptanceCriteria": [
+        "Final pilot length is eight weeks; remove abandoned six weeks and correction marker.",
+        "Budget remains USD 20,000; kickoff Wednesday afternoon; independently quoted customer Tuesday stays.",
+        "Keep Chinese/English switching and do not turn scope correction into a budget correction."
+      ],
+      "rawControl": "这个 pilot 先跑六周，不对，八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Tuesday，sorry，Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。"
+    },
+    {
+      "id": "unresolved-people-and-times",
+      "split": "evaluation",
+      "languages": [
+        "en",
+        "zh-Hans"
+      ],
+      "input": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now just keep both options open, okay?",
+      "context": {},
+      "preserveExactly": [
+        "Mei",
+        "Alex",
+        "For now"
+      ],
+      "acceptanceCriteria": [
+        "Preserve both possible people and the option of not changing owner; no decision is final.",
+        "Thursday or next Monday are alternatives dependent on customer, not two appointments.",
+        "Keep tentative conversational tone and mixed languages; a forced action checklist is undesirable."
+      ],
+      "rawControl": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now just keep both options open, okay?"
+    },
+    {
+      "id": "spelled-email-and-name",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "Can you send the draft to J O A N at example dot com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+      "context": {},
+      "preserveExactly": [
+        "Renée",
+        "Anaïs",
+        "Q3 follow-up"
+      ],
+      "acceptanceCriteria": [
+        "Normalize the unambiguous spelled address to joan@example.com without inventing a real address.",
+        "Keep the question as a question, Renée cc, Joan spelling clarification, Anaïs final-only restriction.",
+        "Preserve exact subject text, diacritics, and distinction between draft and final; do not send anything."
+      ],
+      "rawControl": "Can you send the draft to J O A N at example dot com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up."
+    },
+    {
+      "id": "deliberate-emotion-and-repetition",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+      "context": {},
+      "preserveExactly": [
+        "tonight"
+      ],
+      "acceptanceCriteria": [
+        "Retain deliberate repetition, frustration, profanity and direct questions; do not sanitize or soften.",
+        "No apology is requested; rollback is wanted tonight; shipment happened despite repeated objections.",
+        "Natural paragraph breaks are welcome, corporate email polish or new claims are not."
+      ],
+      "rawControl": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?"
+    },
+    {
+      "id": "narrative-not-a-checklist",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+      "context": {},
+      "preserveExactly": [],
+      "acceptanceCriteria": [
+        "Keep diagnostic chronology as prose, not a list of steps the recipient should perform.",
+        "Same delay with laptop, fine on third try, startup is only a guess, and no retest since lunch.",
+        "Do not promote suspicion to a confirmed root cause or remove uncertainty."
+      ],
+      "rawControl": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch."
+    },
+    {
+      "id": "dictated-email-request-not-execution",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+      "context": {},
+      "preserveExactly": [
+        "Jordan",
+        "Thursday"
+      ],
+      "acceptanceCriteria": [
+        "Preserve the dictated request to write an email; never output a completed Dear Jordan email.",
+        "Keep proposed Thursday unconfirmed and finance/invoice timing question.",
+        "Speaker has not decided whether to send; no inferred answer, action, greeting or sign-off."
+      ],
+      "rawControl": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet."
+    },
+    {
+      "id": "rambling-project-email",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+      "context": {},
+      "preserveExactly": [
+        "Maya",
+        "Intel"
+      ],
+      "acceptanceCriteria": [
+        "Readable email with spoken greeting and closing, logical paragraphs, and three distinct demo-check items.",
+        "Preserve every qualification: tested machine counts, Intel untested, dictionary survived rather than recreated.",
+        "Fresh download without security changes; browser selected-field insert; long desktop-switch recording bar.",
+        "Failure record versus selective retries, existing link versus unverified automatic update, manual-install demo allowance.",
+        "No customer audio; synthetic shopping list; claims must match checks; no invented promise or blanket release blocker."
+      ],
+      "rawControl": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks."
+    },
+    {
+      "id": "traditional-chinese-shared-choice",
+      "split": "evaluation",
+      "languages": [
+        "en",
+        "zh-Hant"
+      ],
+      "input": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+      "context": {},
+      "preserveExactly": [
+        "Irene",
+        "app"
+      ],
+      "acceptanceCriteria": [
+        "Two readable points, each retaining its opposite conditions or allowed/forbidden customer statement.",
+        "Failed payment may retry; charged customer must not retry; investigation permitted, today fix promise forbidden.",
+        "Data-only request in either situation goes to Irene; do not request reinstall; maintain Traditional Chinese and direct frustration.",
+        "Last sentence remains dictated content and sentiment, not permission to omit it or execute a style instruction."
+      ],
+      "rawControl": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。"
+    }
+  ]
+}

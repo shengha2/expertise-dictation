@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Expertise Dictation</string>
+	<string>Expertise Typer</string>
 	<key>CFBundleExecutable</key>
 	<string>FnDictate</string>
 	<key>CFBundleIconFile</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Expertise Dictation</string>
+	<string>Expertise Typer</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -33,11 +33,11 @@
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2026 Hao Sheng. Expertise Dictation is open-source software.</string>
+	<string>Copyright © 2026 Hao Sheng. Expertise Typer is open-source software.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Expertise Dictation uses your microphone when you start dictation or check microphone input during setup.</string>
+	<string>Expertise Typer uses your microphone when you start dictation or check microphone input during setup.</string>
 	<key>NSListenEventUsageDescription</key>
-	<string>Expertise Dictation watches for your selected keyboard shortcut so you can start dictating from any app.</string>
+	<string>Expertise Typer watches for your selected keyboard shortcut so you can start dictating from any app.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSSupportsAutomaticTermination</key>

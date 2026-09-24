@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "status": "Synthetic regression cases declared before the candidate evaluation; no personal dictation.",
+  "protocol": {
+    "runsPerCase": 1,
+    "retryPolicy": "No selective retries; include all provider failures and safety fallbacks.",
+    "scope": "Cleanup model, safeguards, and output layout; not audio recognition or native app insertion."
+  },
+  "cases": [
+    {
+      "id": "en-explicit-two",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "First check the microphone. Second test Fn.",
+      "context": {},
+      "preserveExactly": [
+        "microphone",
+        "Fn"
+      ],
+      "acceptanceCriteria": [
+        "Use two separate list lines even though the input already has sentence punctuation.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "en-item-names",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "Item one keep alpha. Item two keep alpha. Item three do not remove beta.",
+      "context": {},
+      "preserveExactly": [
+        "alpha",
+        "beta"
+      ],
+      "acceptanceCriteria": [
+        "Use three list lines; preserve both alpha mentions and the final negation.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "zh-explicit-three",
+      "split": "evaluation",
+      "languages": [
+        "zh-Hans"
+      ],
+      "input": "第一检查麦克风第二测试快捷键第三不要删除字典",
+      "context": {},
+      "preserveExactly": [
+        "麦克风",
+        "快捷键",
+        "字典"
+      ],
+      "acceptanceCriteria": [
+        "Use three separate list lines with Chinese punctuation and retain the final negation.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "zh-parallel-two",
+      "split": "evaluation",
+      "languages": [
+        "zh-Hans"
+      ],
+      "input": "一是保留中文二是保留 English",
+      "context": {},
+      "preserveExactly": [
+        "中文",
+        "English"
+      ],
+      "acceptanceCriteria": [
+        "Use two list lines, preserving the English word and both items.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "mixed-owners",
+      "split": "evaluation",
+      "languages": [
+        "zh-Hans",
+        "en"
+      ],
+      "input": "第一 Mira 在 3:30 review 第二 Chen 不要 publish",
+      "context": {},
+      "preserveExactly": [
+        "Mira",
+        "3:30",
+        "review",
+        "Chen",
+        "publish"
+      ],
+      "acceptanceCriteria": [
+        "Use two separate lines; preserve owners, timing, negation and every English word in order.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "en-shared-condition",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "If approved first Mira checks 12 cases second Chen must not publish before 4:30.",
+      "context": {},
+      "preserveExactly": [
+        "Mira",
+        "12",
+        "Chen",
+        "4:30"
+      ],
+      "acceptanceCriteria": [
+        "Use two list lines and keep If approved in the introduction so it governs the whole list.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "en-existing-numbers",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "1. Check the microphone. 2. Test Fn. 3. Keep the old dictionary.",
+      "context": {},
+      "preserveExactly": [
+        "microphone",
+        "Fn",
+        "dictionary"
+      ],
+      "acceptanceCriteria": [
+        "Preserve the three numbers and use three separate list lines.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "en-ordinary-narrative",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "My first visit was short and my second visit was longer, but I enjoyed both.",
+      "context": {},
+      "preserveExactly": [],
+      "acceptanceCriteria": [
+        "Keep ordinary prose; no list. Preserve the comparison and both visits.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "zh-ordinary-plan",
+      "split": "evaluation",
+      "languages": [
+        "zh-Hans"
+      ],
+      "input": "我们先测试麦克风然后再检查快捷键如果都正常明天再发新版",
+      "context": {},
+      "preserveExactly": [
+        "麦克风",
+        "快捷键"
+      ],
+      "acceptanceCriteria": [
+        "Keep this short conditional plan as prose; no invented list. Retain order and conditional release.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    },
+    {
+      "id": "en-custom-prose",
+      "split": "evaluation",
+      "languages": [
+        "en"
+      ],
+      "input": "First check the microphone. Second test Fn.",
+      "context": {
+        "rewritePromptOverride": "Preserve all words, use prose only, and never use bullets or list layout."
+      },
+      "preserveExactly": [
+        "microphone",
+        "Fn"
+      ],
+      "acceptanceCriteria": [
+        "Full must honor the explicit prose-only override and contain no bullets. Light still uses its built-in list contract.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "noneCriterion": "The controller must return the input byte-for-byte without a rewrite request."
+    }
+  ]
+}

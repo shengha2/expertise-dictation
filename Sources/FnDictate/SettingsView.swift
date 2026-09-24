@@ -15,7 +15,13 @@ struct SettingsView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 18) {
-                Label("Expertise Dictation", systemImage: "waveform.and.mic")
+                HStack(spacing: 9) {
+                    if let icon = NSImage(named: "AppIcon") {
+                        Image(nsImage: icon).resizable().interpolation(.high)
+                            .frame(width: 29, height: 29).accessibilityHidden(true)
+                    }
+                    Text("Expertise Typer")
+                }
                     .font(.hub(15, .semibold)).foregroundColor(Hub.green)
                     .lineLimit(1).fixedSize(horizontal: true, vertical: false)
                 Spacer()
@@ -82,6 +88,7 @@ struct HomePage: View {
     @State private var retryingRecording = false
     @State private var recoveryChoices: [RecoveryChoice] = []
     @State private var selectedRecoveryURL: URL?
+    @State private var showRewritePrompt = false
     private let refresh = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -115,6 +122,17 @@ struct HomePage: View {
                 }
             }
             updateStatus
+            HStack(spacing: 12) {
+                Label(settings.rewritePromptOverride.isEmpty ? "Default rewrite prompt" : "Custom rewrite prompt",
+                      systemImage: "text.alignleft")
+                    .font(.hub(13)).foregroundColor(Hub.helper)
+                Spacer()
+                Button("View and edit prompt…") { showRewritePrompt = true }
+                    .buttonStyle(PillButtonStyleHub(kind: .secondary, small: true))
+                    .accessibilityIdentifier("home-edit-rewrite-prompt")
+                    .accessibilityHint("Read or customize the instructions used by Full rewrite")
+            }
+            UsageDashboardView()
             if settings.usesHostedService, hostedService.state != .ready, controller.phase == .idle {
                 HubCard {
                     Text(hostedService.state.message).font(.hub(13)).foregroundColor(Hub.helper)
@@ -215,6 +233,7 @@ struct HomePage: View {
             }
         }
         .onAppear { refreshReady(); refreshRecoveryChoices() }
+        .sheet(isPresented: $showRewritePrompt) { RewritePromptEditor(settings: settings) }
         .onReceive(refresh) { _ in refreshReady() }
         .onChange(of: controller.recoveryRecordingURLs) { _, _ in refreshRecoveryChoices() }
         .onChange(of: controller.phase) { _, phase in
@@ -406,10 +425,10 @@ struct PreferencesPage: View {
                 }
                 RewriteExample(mode: settings.dictationMode)
                 HStack {
-                    Text("Shape the wording used by Full rewrite.")
+                    Text(settings.rewritePromptOverride.isEmpty ? "Using the public default prompt." : "Using your custom Full rewrite prompt.")
                         .font(.hub(12)).foregroundColor(Hub.helper)
                     Spacer()
-                    Button("Edit rewrite prompt…") { showRewritePrompt = true }
+                    Button("View and edit prompt…") { showRewritePrompt = true }
                         .buttonStyle(PillButtonStyleHub(kind: .ghost, small: true))
                         .accessibilityIdentifier("edit-rewrite-prompt")
                         .accessibilityHint("Edit and save the instructions used by Full rewrite")
@@ -466,7 +485,7 @@ struct PreferencesPage: View {
                             }
                             HStack {
                                 if controller.micTesting { LevelMeter(level: controller.micTestLevel) }
-                                else { Text("Check that Expertise Dictation can hear you.").font(.hub(12)).foregroundColor(Hub.helper) }
+                                else { Text("Check that Expertise Typer can hear you.").font(.hub(12)).foregroundColor(Hub.helper) }
                                 Spacer()
                                 Button(controller.micTesting ? "Stop test" : "Test microphone") {
                                     controller.micTesting ? controller.stopMicTest() : controller.startMicTest()
@@ -486,7 +505,7 @@ struct PreferencesPage: View {
                                 .buttonStyle(PillButtonStyleHub(kind: .secondary, small: true)).disabled(history.items.isEmpty)
                         }
                         HubCard {
-                            SettingRow(title: "Launch at login", help: "Keep Expertise Dictation ready after you sign in to your Mac.") {
+                            SettingRow(title: "Launch at login", help: "Keep Expertise Typer ready after you sign in to your Mac.") {
                                 Toggle("Launch at login", isOn: $launchAtLogin).hubSwitch()
                                     .onChange(of: launchAtLogin) { _, on in
                                         do { try LaunchAtLogin.set(on); loginError = "" }
@@ -520,7 +539,7 @@ struct PreferencesPage: View {
                                 NotificationCenter.default.post(name: .fnDictateShowOnboarding, object: nil)
                             }.buttonStyle(PillButtonStyleHub(kind: .secondary, small: true))
                             Spacer()
-                            Text("Expertise Dictation \(AppDelegate.version)").font(.hub(12)).foregroundColor(Hub.helper)
+                            Text("Expertise Typer \(AppDelegate.version)").font(.hub(12)).foregroundColor(Hub.helper)
                         }
                         HubCard {
                             CardTitle(text: "Speed", subtitle: "Shorter wait after you release the key, without changing what the meaning guard allows.")
@@ -618,8 +637,8 @@ struct RewritePromptEditor: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Rewrite prompt").font(.hub(22, .semibold)).foregroundColor(Hub.ink)
-            Text("Edit how Full rewrite phrases and structures your words. Save before your next dictation.")
+            Text("Your rewrite prompt").font(.hub(22, .semibold)).foregroundColor(Hub.ink)
+            Text("Edit how Full rewrite phrases and structures your words. Save before your next dictation. Reset to default restores the original instructions; click Save to apply them.")
                 .font(.hub(13)).foregroundColor(Hub.helper)
                 .fixedSize(horizontal: false, vertical: true)
             TextEditor(text: $draft.text)
@@ -640,11 +659,11 @@ struct RewritePromptEditor: View {
             .buttonStyle(PillButtonStyleHub(kind: .ghost, small: true))
             .accessibilityIdentifier("view-public-prompts")
             if !draft.canSave {
-                Text("Enter instructions or restore the default prompt.")
+                Text("Enter instructions or reset to the default prompt.")
                     .font(.hub(12)).foregroundColor(Hub.amber)
             }
             HStack(spacing: 10) {
-                Button("Restore default") { draft.restoreDefault() }
+                Button("Reset to default") { draft.restoreDefault() }
                     .buttonStyle(PillButtonStyleHub(kind: .ghost, small: true))
                     .accessibilityIdentifier("rewrite-prompt-restore")
                 Spacer()

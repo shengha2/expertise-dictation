@@ -92,7 +92,7 @@ def main():
     base = public_url(args.download_base)
     if not base.endswith("/"):
         raise ValueError("download-base must end in /")
-    notes = args.release_notes.read_text() if args.release_notes else "Expertise Dictation maintenance update."
+    notes = args.release_notes.read_text() if args.release_notes else "Expertise Typer maintenance update."
     if len(notes) > 100_000:
         raise ValueError("release notes are too large")
     # Validate a private snapshot so a concurrent source replacement cannot change
@@ -123,11 +123,11 @@ def main():
                 run("hdiutil", "attach", "-readonly", "-nobrowse", "-mountpoint", mount, dmg)
                 attached = True
                 apps = list(mount.glob("*.app"))
-                app = mount / "Expertise Dictation.app"
+                app = mount / "Expertise Typer.app"
                 if apps != [app] or app.is_symlink():
-                    raise ValueError("DMG must contain exactly Expertise Dictation.app")
+                    raise ValueError("DMG must contain exactly Expertise Typer.app")
                 info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
-                if info.get("CFBundleIdentifier") != "com.hao.fndictate" or info.get("CFBundleExecutable") != "FnDictate" or info.get("CFBundleDisplayName") != "Expertise Dictation":
+                if info.get("CFBundleIdentifier") != "com.hao.fndictate" or info.get("CFBundleExecutable") != "FnDictate" or info.get("CFBundleDisplayName") != "Expertise Typer":
                     raise ValueError("unexpected app identity")
                 config.validate(info, required=True)
                 version = info.get("CFBundleVersion", "")
@@ -157,9 +157,16 @@ def main():
         else:
             feed = ET.Element("rss", {"version": "2.0"})
             channel = ET.SubElement(feed, "channel")
-            ET.SubElement(channel, "title").text = "Expertise Dictation updates"
             ET.SubElement(channel, "{" + ATOM + "}link", {"href": info["SUFeedURL"], "rel": "self", "type": "application/rss+xml"})
-            ET.SubElement(channel, "description").text = "Signed updates for Expertise Dictation."
+        # Rename the channel's presentation only. Older signed release entries,
+        # their artifact URLs, and the channel identity remain intact.
+        channel = feed.find("channel")
+        for name, value in (("title", "Expertise Typer updates"),
+                            ("description", "Signed updates for Expertise Typer.")):
+            element = channel.find(name)
+            if element is None:
+                element = ET.SubElement(channel, name)
+            element.text = value
         output.parent.mkdir(parents=True, exist_ok=True)
         lock = output.parent / ("." + output.name + ".lock")
         lock.mkdir()  # Refuse concurrent publishers targeting the same output.
@@ -173,7 +180,7 @@ def main():
                     raise ValueError("unexpected Ed25519 archive signature")
                 run(signer, "--account", args.account, "--verify", archive, signature)
                 item = ET.Element("item")
-                ET.SubElement(item, "title").text = "Expertise Dictation " + version
+                ET.SubElement(item, "title").text = "Expertise Typer " + version
                 ET.SubElement(item, "{" + SPARKLE + "}version").text = version
                 ET.SubElement(item, "{" + SPARKLE + "}shortVersionString").text = version
                 ET.SubElement(item, "{" + SPARKLE + "}minimumSystemVersion").text = info.get("LSMinimumSystemVersion", "14.0")
@@ -190,7 +197,7 @@ def main():
                 prior_versions(parse_feed(feed_path), info["SUFeedURL"])
                 hashes = {file.name: hashlib.sha256(file.read_bytes()).hexdigest() for file in (archive, feed_path)}
                 (staging / "SHA256SUMS").write_text("".join(digest + "  " + name + "\n" for name, digest in hashes.items()))
-                receipt = {"product": "Expertise Dictation", "version": version, "teamID": team,
+                receipt = {"product": "Expertise Typer", "version": version, "teamID": team,
                            "createdUTC": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                            "feedURL": info["SUFeedURL"], "downloadURL": download_url,
                            "publicKey": public_key, "sha256": hashes, "uploaded": False,

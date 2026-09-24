@@ -1,0 +1,117 @@
+{
+  "source": "Only preexisting synthetic bilingual fixture records 1\u201316; no microphone and no user dictation.",
+  "model": "gpt-6-luna",
+  "rewrite": "full",
+  "priority": true,
+  "runsPerMode": 3,
+  "protocol": "Alternate serial/parallel, reverse second pair; same frozen source/prompts and settings except production client concurrency flag. No selective retries.",
+  "limits": "This measures post-transcription cleanup only. Real requests vary in output and latency; it does not measure short-message or total dictation latency.",
+  "binarySHA256": {
+    "serial": "4a4b38b000d6e35e9721827cebded702dd675deae255548c710fa2d0452824da",
+    "parallel": "4fbc176052a8f5bdac9df3dc179fdb331af9617e0925222c275f4ff006b0b22d"
+  },
+  "inputCharacters": 6402,
+  "rows": [
+    {
+      "run": 1,
+      "mode": "serial",
+      "elapsedSeconds": 14.960165977478027,
+      "wallSeconds": 15.18139575,
+      "exitCode": 0,
+      "sections": 4,
+      "fullyCleaned": true,
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "everyLiteralPreserved": true,
+      "markersExactlyOnceInOrder": true,
+      "allNumericSpellingsAndCountsPreserved": true
+    },
+    {
+      "run": 1,
+      "mode": "parallel",
+      "elapsedSeconds": 14.91848599910736,
+      "wallSeconds": 14.931083334,
+      "exitCode": 0,
+      "sections": 4,
+      "fullyCleaned": true,
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "everyLiteralPreserved": true,
+      "markersExactlyOnceInOrder": true,
+      "allNumericSpellingsAndCountsPreserved": true
+    },
+    {
+      "run": 2,
+      "mode": "parallel",
+      "elapsedSeconds": 11.417024970054626,
+      "wallSeconds": 11.429674083000002,
+      "exitCode": 0,
+      "sections": 4,
+      "fullyCleaned": true,
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "everyLiteralPreserved": true,
+      "markersExactlyOnceInOrder": true,
+      "allNumericSpellingsAndCountsPreserved": true
+    },
+    {
+      "run": 2,
+      "mode": "serial",
+      "elapsedSeconds": 14.637338995933533,
+      "wallSeconds": 14.649702750000003,
+      "exitCode": 0,
+      "sections": 4,
+      "fullyCleaned": true,
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "everyLiteralPreserved": true,
+      "markersExactlyOnceInOrder": true,
+      "allNumericSpellingsAndCountsPreserved": true
+    },
+    {
+      "run": 3,
+      "mode": "serial",
+      "elapsedSeconds": 14.863849997520447,
+      "wallSeconds": 14.875482999999996,
+      "exitCode": 0,
+      "sections": 4,
+      "fullyCleaned": true,
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "everyLiteralPreserved": true,
+      "markersExactlyOnceInOrder": true,
+      "allNumericSpellingsAndCountsPreserved": true
+    },
+    {
+      "run": 3,
+      "mode": "parallel",
+      "elapsedSeconds": 7.905488967895508,
+      "wallSeconds": 7.924515958000001,
+      "exitCode": 0,
+      "sections": 4,
+      "fullyCleaned": true,
+      "guardFallbacks": 0,
+      "providerFallbacks": 0,
+      "error": null,
+      "everyLiteralPreserved": true,
+      "markersExactlyOnceInOrder": true,
+      "allNumericSpellingsAndCountsPreserved": true
+    }
+  ],
+  "summary": {
+    "serial": {
+      "medianSeconds": 14.863849997520447,
+      "runs": 3
+    },
+    "parallel": {
+      "medianSeconds": 11.417024970054626,
+      "runs": 3
+    }
+  },
+  "medianReductionPercent": 23.189315204612615
+}

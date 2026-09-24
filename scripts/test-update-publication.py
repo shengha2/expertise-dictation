@@ -27,7 +27,7 @@ def main():
         for name in ("prepare-update.py", "update-config.py", "verify-release-app.py"):
             shutil.copy2(ROOT / "scripts" / name, root / "scripts" / name)
         executable(root / "scripts/fetch-sparkle.sh", "import os\nprint(os.environ['FIXTURE_SPARKLE'])\n")
-        app = root / "template/Expertise Dictation.app"
+        app = root / "template/Expertise Typer.app"
         base = app / "Contents/Frameworks/Sparkle.framework/Versions/B"
         for helper in ("Updater.app", "XPCServices/Installer.xpc", "XPCServices/Downloader.xpc"):
             (base / helper).mkdir(parents=True)
@@ -35,18 +35,18 @@ def main():
         info = plistlib.loads((ROOT / "Resources/Info.plist").read_bytes())
         info.update(CFBundleVersion="1.1.3", CFBundleShortVersionString="1.1.3", SUFeedURL=FEED, SUPublicEDKey=PUBLIC)
         (app / "Contents/Info.plist").write_bytes(plistlib.dumps(info))
-        dmg = root / "Expertise-Dictation-1.1.3.dmg"
+        dmg = root / "Expertise-Typer-1.1.3.dmg"
         dmg.write_text("Mock DMG, not installable.")
         mocks = root / "mocks"
         common = "import os, sys, pathlib, shutil, plistlib\na=sys.argv[1:]\nf=os.environ['FIXTURE_FAILURE']\n"
         executable(mocks / "hdiutil", common + '''if a[0]=='attach':
     mount=pathlib.Path(a[a.index('-mountpoint')+1])
-    shutil.copytree(os.environ['FIXTURE_APP'],mount/'Expertise Dictation.app')
+    shutil.copytree(os.environ['FIXTURE_APP'],mount/'Expertise Typer.app')
 ''')
         executable(mocks / "codesign", common + '''if '-dv' in a:
     print('Authority=Developer ID Application: Fixture (FIXTURE123)\\nTeamIdentifier=FIXTURE123\\nflags=0x10000(runtime)\\nTimestamp=Fixture',file=sys.stderr)
 elif '--entitlements' in a:
-    value={'com.apple.security.device.audio-input':True} if a[-1].endswith('Expertise Dictation.app') else {}
+    value={'com.apple.security.device.audio-input':True} if a[-1].endswith('Expertise Typer.app') else {}
     sys.stdout.buffer.write(plistlib.dumps(value))
 ''')
         executable(mocks / "xcrun", common + "sys.exit(1 if f=='notary' else 0)\n")
@@ -77,7 +77,7 @@ else:
             output = root / ("publish-" + case)
             source = dmg
             if case == "local":
-                source = root / "Expertise-Dictation-1.1.3-local.dmg"
+                source = root / "Expertise-Typer-1.1.3-local.dmg"
                 source.write_bytes(dmg.read_bytes())
             command = ["python3", str(root / "scripts/prepare-update.py"), "--dmg", str(source), "--output", str(output),
                        "--download-base", "https://updates.sparkle-project.org/releases/"]

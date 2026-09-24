@@ -262,7 +262,7 @@ enum TextInserter {
             return toInsert
         }
         guard Permissions.accessibilityGranted else {
-            throw InsertionError.unavailable("Enable Expertise Dictation in System Settings → Privacy & Security → Accessibility to type automatically.")
+            throw InsertionError.unavailable("Enable Expertise Typer in System Settings → Privacy & Security → Accessibility to type automatically.")
         }
         if let expectedTarget, !validateOriginalTarget(expectedTarget, current: target) {
             throw InsertionError.targetChanged

@@ -3,7 +3,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD="${BUILD_DIR:-$ROOT/build}"
-APP="$BUILD/Expertise Dictation.app"
+APP="$BUILD/Expertise Typer.app"
 for script in "$ROOT"/scripts/*.sh; do bash -n "$script"; done
 plutil -lint "$ROOT/Resources/Info.plist" "$ROOT/Resources/FnDictate.entitlements"
 if [[ "${SKIP_BUILD:-0}" != "1" ]]; then

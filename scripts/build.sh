@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds Expertise Dictation.app with the plain Swift compiler (no Xcode needed).
+# Builds Expertise Typer.app with the plain Swift compiler (no Xcode needed).
 #
 #   scripts/build.sh            release build, arm64 + x86_64 universal binary
 #   ARCHS=arm64 scripts/build.sh    faster single-architecture build
@@ -7,7 +7,7 @@
 #   EXPERTISE_SERVICE_MODE=personal scripts/build.sh  explicit own-API-key flavor
 # Hosted is the default flavor and needs EXPERTISE_SERVICE_URL for distribution.
 #
-# Output: build/Expertise Dictation.app (internal executable remains FnDictate).
+# Output: build/Expertise Typer.app (internal executable remains FnDictate).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -18,10 +18,10 @@ BUILD_NUMBER="$(python3 "$ROOT/scripts/update-config.py" --build-version "$VERSI
 ARCHS="${ARCHS:-arm64 x86_64}"
 MIN_OS="14.0"
 BUILD="${BUILD_DIR:-$ROOT/build}"
-APP="$BUILD/Expertise Dictation.app"
+APP="$BUILD/Expertise Typer.app"
 mkdir -p "$BUILD"
 BUILD="$(cd "$BUILD" && pwd)"
-APP="$BUILD/Expertise Dictation.app"
+APP="$BUILD/Expertise Typer.app"
 [[ "$(uname -s)" == "Darwin" ]] || { echo "error: building requires macOS" >&2; exit 1; }
 SWIFTC="$(xcrun --find swiftc)"
 SPARKLE="$("$ROOT/scripts/fetch-sparkle.sh")"
@@ -102,7 +102,7 @@ printf 'APPL????' > "$APP/Contents/PkgInfo"
 cp -R Resources/Sounds "$APP/Contents/Resources/"
 cp -R Resources/Fonts "$APP/Contents/Resources/"
 cp -R prompts "$APP/Contents/Resources/"
-cp LICENSE "$APP/Contents/Resources/LICENSE-Expertise-Dictation.txt"
+cp LICENSE "$APP/Contents/Resources/LICENSE-Expertise-Typer.txt"
 cp THIRD_PARTY_NOTICES.md "$APP/Contents/Resources/THIRD_PARTY_NOTICES.md"
 if [[ -f Resources/AppIcon.icns ]]; then
   cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"

@@ -120,7 +120,7 @@ struct OnboardingView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
-                Label("Expertise Dictation", systemImage: "waveform.and.mic")
+                Label("Expertise Typer", systemImage: "waveform.and.mic")
                     .font(.hub(14, .semibold)).foregroundColor(Hub.green)
                 Spacer()
                 Text("\(step.rawValue + 1) of \(Step.allCases.count) · \(step.title)")
@@ -174,7 +174,7 @@ struct OnboardingView: View {
                 Text("Try your own sentence, or use the example. You can speak any of your selected languages.")
                     .font(.hub(12)).foregroundColor(Hub.helper).fixedSize(horizontal: false, vertical: true)
             case .ready:
-                Text("Expertise Dictation stays in your menu bar when this window is closed.")
+                Text("Expertise Typer stays in your menu bar when this window is closed.")
                     .font(.hub(13)).foregroundColor(Hub.helper).fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -542,7 +542,7 @@ struct OnboardingView: View {
         case .microphone: return "Check shortcut"
         case .shortcut: return "Try dictation"
         case .practice: return "Continue"
-        case .ready: return "Start using Expertise Dictation"
+        case .ready: return "Start using Expertise Typer"
         }
     }
     private var primaryEnabled: Bool {

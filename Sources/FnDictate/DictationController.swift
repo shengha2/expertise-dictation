@@ -627,7 +627,7 @@ final class DictationController: ObservableObject {
                 return
             default:
                 Permissions.open(.microphone)
-                fail("Microphone access is off for Expertise Dictation — enable it in System Settings")
+                fail("Microphone access is off for Expertise Typer — enable it in System Settings")
                 return
             }
             audio.preferBuiltInMic = settings.micPreference == .builtIn
@@ -946,7 +946,8 @@ final class DictationController: ObservableObject {
         case .light:
             output = LocalCleanup.light(raw, cjkSpacing: cjk)
         case .clean, .rewrite:
-            if mode == .clean && settings.skipLLMForShort && LocalCleanup.isShort(raw) {
+            if mode == .clean && settings.skipLLMForShort && LocalCleanup.isShort(raw)
+                && !CleanupPolicy.hasExplicitEnumeration(raw) {
                 output = LocalCleanup.light(raw, cjkSpacing: cjk)
                 note = "short, no LLM"
             } else if mode == .clean, settings.skipLLMWhenClean,

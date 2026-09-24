@@ -9,11 +9,11 @@ enum CLI {
         guard args.count > 1 else { return false }
         switch args[1] {
         case "--version":
-            print("Expertise Dictation \(AppDelegate.version)")
+            print("Expertise Typer \(AppDelegate.version)")
             return true
         case "--help", "-h":
             print("""
-            Expertise Dictation — tap Fn, speak, then tap Fn again (default shortcut).
+            Expertise Typer — tap Fn, speak, then tap Fn again (default shortcut).
               --selftest             run the built-in checks for local clean-up and the meaning guard
               --cleanup "text"       run bounded LLM clean-up (uses saved keys)
               --cleanup-file PATH    clean a UTF-8 transcript, with --report JSON_PATH evidence
@@ -668,6 +668,8 @@ enum SelfTest {
         HostedServiceRegressionTests.run(check: check)
         ReliabilityRegressionTests.run(check: check)
         AudioCaptureRegressionTests.run(check: check)
+        CleanupConcurrencyRegressionTests.run(check: check)
+        UsageStatisticsRegressionTests.run(check: check)
         HotkeyRegressionTests.run(check: check)
         ShortcutPreferenceRegressionTests.run(check: check)
         UpdaterRegressionTests.run(check: check)

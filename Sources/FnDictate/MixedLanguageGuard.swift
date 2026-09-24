@@ -16,6 +16,11 @@ enum MixedLanguageGuard {
                 .map { string.substring(with: $0.range).lowercased().replacingOccurrences(of: "’", with: "'") }
                 .filter { !fillerSounds.contains($0) }
         }
-        return tokens(original) == tokens(output)
+        let proposed = tokens(output)
+        if tokens(original) == proposed { return true }
+        // Compare the final explicitly corrected wording as well. This does not
+        // remove independent occurrences of an abandoned name/day elsewhere, and
+        // literal integrity remains a separate mandatory check in both modes.
+        return tokens(MeaningGuard.resolveExplicitCorrections(original)) == proposed
     }
 }

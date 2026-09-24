@@ -19,6 +19,17 @@ def mock(directory, name, body):
     path.chmod(0o755)
 
 
+def stub_installer(source_root):
+    # The real helper compiles the artwork renderer and fetches dmgbuild. These
+    # fixtures exercise the release gates and staged layout without invoking that
+    # native image pipeline; the release's real DMG is inspected separately.
+    mock(source_root / "scripts", "create-installer-image.sh", '''[[ "$#" == 3 ]] || exit 20
+[[ -d "$1/Guide and licenses" ]] || exit 21
+[[ -s "$1/Expertise Typer.app/Contents/Resources/AppIcon.icns" ]] || exit 22
+hdiutil create -volname "Expertise Typer $3" -srcfolder "$1" -ov -format UDZO "$2"
+''')
+
+
 def main():
     with tempfile.TemporaryDirectory(prefix="expertise-package-fixtures-") as temporary:
         fixture = Path(temporary).resolve()
@@ -48,8 +59,10 @@ def main():
         (fixture / "Resources").mkdir(exist_ok=True)
         for name in ("Info.plist", "FnDictate.entitlements"):
             shutil.copy2(ROOT / "Resources" / name, fixture / "Resources" / name)
-        app = fixture / "build/Expertise Dictation.app"
+        app = fixture / "build/Expertise Typer.app"
         (app / "Contents/MacOS").mkdir(parents=True)
+        (app / "Contents/Resources").mkdir()
+        (app / "Contents/Resources/AppIcon.icns").write_bytes(b"Synthetic icon fixture; not a real icon.")
         info = plistlib.loads((ROOT / "Resources/Info.plist").read_bytes())
         info["CFBundleShortVersionString"] = version
         info["CFBundleVersion"] = version
@@ -73,7 +86,7 @@ def main():
 [[ "$FIXTURE_FAILURE" != dmg_signature || "$target" != *.dmg ]] || exit 1
 if [[ "$*" == *"--entitlements"* ]]; then
 extra=''
-if [[ "$target" == *"/Expertise Dictation.app" ]]; then
+if [[ "$target" == *"/Expertise Typer.app" ]]; then
 extra='<key>com.apple.security.device.audio-input</key><true/>'
 if [[ "$FIXTURE_FAILURE" == entitlements ]]; then extra="$extra<key>com.apple.security.cs.disable-library-validation</key><true/>"; fi
 elif [[ "$FIXTURE_FAILURE" == helper_entitlements ]]; then
@@ -113,26 +126,46 @@ elif [[ "$1" == stapler ]]; then
 fi
 ''')
         mock(mocks, "hdiutil", '''if [[ "$1" == create ]]; then
+[[ "$FIXTURE_FAILURE" != image_create ]] || exit 1
 for last; do :; done
 previous=''
 for arg; do
 if [[ "$previous" == -srcfolder ]]; then image="$arg"; fi
 previous="$arg"
 done
+guide="$image/Guide and licenses"
 while IFS= read -r document; do
-[[ -f "$image/$document" ]] || exit 9
+[[ -f "$guide/$document" ]] || exit 9
 done < "$FIXTURE_DOCUMENTS"
-if [[ "$FIXTURE_EVIDENCE" == present ]]; then
-[[ -f "$image/docs/evidence/fixture/reviewed.json" ]] || exit 9
-else
-[[ ! -e "$image/docs/evidence" ]] || exit 9
-fi
-[[ -d "$image/Expertise Dictation.app" && ! -e "$image/FnDictate.app" ]] || exit 10
-[[ ! -e "$image/docs/evidence/fixture/private.json" ]] || exit 11
-[[ ! -e "$image/docs/release-1.1.8.md" ]] || exit 12
-python3 - "$image/Read me first.txt" <<'PY'
+[[ -d "$image/Expertise Typer.app" && ! -e "$image/FnDictate.app" ]] || exit 10
+[[ ! -e "$image/Expertise Dictation.app" ]] || exit 10
+[[ ! -e "$guide/docs/evidence/fixture/private.json" ]] || exit 11
+[[ ! -e "$guide/docs/release-1.1.8.md" ]] || exit 12
+python3 - "$image" "$guide/Read me first.txt" <<'PY'
 import os, pathlib, sys
-note = pathlib.Path(sys.argv[1]).read_text()
+image = pathlib.Path(sys.argv[1])
+assert {p.name for p in image.iterdir()} == {"Expertise Typer.app", "Applications", "Guide and licenses"}
+assert (image / "Applications").is_symlink() and os.readlink(image / "Applications") == "/Applications"
+guide = image / "Guide and licenses"
+# Reviewed synthetic evidence can be part of the public documentation inventory.
+# Operator-only evidence remains optional and must never cause whole directories
+# of private diagnostics to be copied into either source or disk-image exports.
+inventory = pathlib.Path(os.environ["FIXTURE_DOCUMENTS"]).read_text().splitlines()
+expected_evidence = {name for name in inventory if name.startswith("docs/evidence/")}
+if os.environ["FIXTURE_EVIDENCE"] == "present":
+    expected_evidence.add("docs/evidence/fixture/reviewed.json")
+evidence_root = guide / "docs/evidence"
+evidence_files = [path for path in evidence_root.rglob("*") if path.is_file() or path.is_symlink()]
+assert all(not path.is_symlink() for path in evidence_files), "Packaged evidence must not contain links"
+actual_evidence = {str(path.relative_to(guide)) for path in evidence_files}
+assert actual_evidence == expected_evidence, {
+    "missing_evidence": sorted(expected_evidence - actual_evidence),
+    "unexpected_evidence": sorted(actual_evidence - expected_evidence),
+}
+note = pathlib.Path(sys.argv[2]).read_text()
+assert note.startswith("Expertise Typer ")
+assert "Drag Expertise Typer into Applications" in note
+assert "Your dictionary" in note and "same profile" in note
 assert "guided permissions" in note
 if os.environ["FIXTURE_SERVICE_MODE"] == "personal":
     assert "personal-connection release" in note and "your own provider API key" in note
@@ -144,7 +177,7 @@ else:
 assert "access and an API key" not in note
 PY
 if [[ "$FIXTURE_MODE" == --notarized ]]; then
-python3 - "$image/Read me first.txt" <<'PY'
+python3 - "$guide/Read me first.txt" <<'PY'
 import pathlib, sys
 assert "Automatic updates are unavailable" in pathlib.Path(sys.argv[1]).read_text()
 PY
@@ -168,6 +201,9 @@ fi
         exported = fixture / "public-source"
         subprocess.run(["python3", str(ROOT / "scripts/export-public-source.py"), str(exported)],
                        check=True, capture_output=True, text=True)
+        assert (exported / "scripts/create-installer-image.sh").is_file()
+        for source_root in (fixture, exported):
+            stub_installer(source_root)
         assert not (exported / "docs/distribution-evidence.txt").exists()
         assert not (exported / "docs/release-1.1.8.md").exists()
         export_inventory = fixture / "export-documents.txt"
@@ -179,7 +215,7 @@ fi
                   for failure in ("none", "identity", "credentials", "signature", "adhoc", "timestamp",
                                   "entitlements", "helper_team", "helper_runtime", "helper_entitlements",
                                   "notary", "timeout", "staple", "staple_validate", "gatekeeper",
-                                  "dmg_signature", "dmg_notary", "dmg_staple", "dmg_gatekeeper", "image_verify")]
+                                  "dmg_signature", "dmg_notary", "dmg_staple", "dmg_gatekeeper", "image_create", "image_verify")]
         cases += [("manual_config_" + configuration, "--notarized", "none", configuration)
                   for configuration in ("configured", "feed_only", "key_only", "invalid", "empty", "unsigned_feed")]
         cases += [("public_source", "--local", "none", "missing"),
@@ -305,17 +341,24 @@ fi
             succeeds = failure == "none" and not case.startswith("manual_config_")
             if succeeds:
                 suffix = {"--local": "-local", "--notarized": "-notarized-manual", "--release": ""}[mode]
-                name = "Expertise-Dictation-" + case_version + suffix
-                assert run.returncode == 0 and [p.name for p in finals] == [name + ".dmg"], (case, run.stdout, run.stderr)
+                name = "Expertise-Typer-" + case_version + suffix
+                assert run.returncode == 0 and [p.name for p in finals] == [name + ".dmg"], {
+                    "case": case, "exitCode": run.returncode, "finalArtifacts": [p.name for p in finals],
+                    "stdout": run.stdout, "stderr": run.stderr, "recentMockCalls": calls[-6:],
+                }
                 assert Path(str(finals[0]) + ".sha256").exists()
                 receipt = (target / (name + "-release.txt")).read_text()
-                assert receipt.startswith("Expertise Dictation " + case_version)
+                assert receipt.startswith("Expertise Typer " + case_version)
+                assert "Usage guide: Guide and licenses/MINT.md (included in the disk image)" in receipt
                 assert "Service mode: " + runenv["FIXTURE_SERVICE_MODE"] in receipt
                 assert "docs/rewrite-design.md" in receipt and "docs/release-1.1.9.md" in receipt
                 assert "README.md" in receipt and "LICENSE" in receipt and "THIRD_PARTY_NOTICES.md" in receipt
                 assert "docs/release-1.1.8.md" not in receipt
                 for document in Path(runenv["FIXTURE_DOCUMENTS"]).read_text().splitlines():
                     assert document in receipt, (case, document)
+                assert sum(call.startswith("create-installer-image.sh ") for call in calls) == 1, (case, calls)
+                assert sum(call.startswith("hdiutil create -volname Expertise Typer ") for call in calls) == 1, (case, calls)
+                assert not any(call.startswith(("clang ", "curl ", "pip ", "pip3 ")) for call in calls), (case, calls)
                 if mode == "--local":
                     assert "NOT Apple notarized" in receipt
                     assert not any("notarytool submit " in call for call in calls)
@@ -332,7 +375,10 @@ fi
                 assert again.returncode != 0 and finals[0].read_bytes() == before
                 print("PASS mocked packaging:", case, "all required gates, reviewed inventory, existing output preserved")
             else:
-                assert run.returncode != 0 and not finals, (case, run.stdout, run.stderr)
+                assert run.returncode != 0 and not finals, {
+                    "case": case, "exitCode": run.returncode, "finalArtifacts": [p.name for p in finals],
+                    "stdout": run.stdout, "stderr": run.stderr, "recentMockCalls": calls[-6:],
+                }
                 assert not list(target.glob("*.dmg.sha256")) and not list(target.glob("*-release.txt"))
                 if case.startswith("manual_config_") or failure in ("update_config", "hosted"):
                     assert not any("notarytool submit " in call for call in calls), (case, calls)

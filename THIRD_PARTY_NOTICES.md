@@ -5,6 +5,7 @@ prompts, documentation and assets. Third-party components retain their licenses:
 
 - Sparkle 2.10.0: [upstream license](https://github.com/sparkle-project/Sparkle/blob/2.10.0/LICENSE), also copied into each app bundle as `LICENSE-Sparkle.txt`.
 - Inter fonts: [bundled license](Resources/Fonts/LICENSE-Inter.txt).
+- Installer build tools: dmgbuild 1.6.2 (New BSD), ds-store 1.3.1 (MIT), and mac-alias 2.2.2 (MIT). Hash-pinned wheels are listed in `scripts/requirements-dmg.txt`; these tools and their installed license files stay in the local build environment and are not embedded in the app.
 - UI SFX start and stop sounds: [bundled license](Resources/Sounds/LICENSE-UI-SFX.txt) and [source attribution](Resources/Sounds/SOURCE.md).
 
 OpenAI provides hosted inference under its own service terms. A source-code

@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "candidate": "B6 final local guard hardening; unchanged B5 prompts",
+  "binarySHA256": "0c33f246fcdbd2066129e56dfb87c02f1b4f95af628376e463ba76e26ab00402",
+  "sourceSHA256": {
+    "Sources/FnDictate/MeaningGuard.swift": "f776e06eed6dd319a8fb82222d3a6a9d74e0b9a70cb6d32a5c87525970d5298b",
+    "Sources/FnDictate/MixedLanguageGuard.swift": "058263f72fcbf09f64af9056366e6888088dec51db5f6633475fcda9757759d1",
+    "Sources/FnDictate/RewriteVerification.swift": "374553aa41ebe1b5203af3d94260a2afa0fe4a2fc253eaa3c1808ec32a400ac7",
+    "Sources/FnDictate/LongTextProcessing.swift": "6e18b41474adf88b540e4db6159ec3066b644087f3503a3e0790b2d6c7a3cfe8",
+    "Sources/FnDictate/CorrectionGuardRegressionTests.swift": "fa20d1d27858150c2c13d7711adbce6f28531eebffe50e1c9dfd0b81c023d03d",
+    "Sources/FnDictate/CleanupRegressionTests.swift": "ca86b918a9e4ebb7591fb1ba34663f78f0a60f3fe8e4203764e1ed4d5d79b866",
+    "Sources/FnDictate/CleanupPolicy.swift": "78bf96c4bc2ba5f4fab5219ac30de4969b7709fd45cccc719df0ea99b4be020b",
+    "Sources/FnDictate/PublicPromptDefaults.swift": "9e34ffc7baac51c2d61f9079bb4b84ae21e5bfa7dcb24d5dd52a1c204e6e390e",
+    "Sources/FnDictate/ReadabilityRegressionTests.swift": "d9a2075e8830d4d5049e108d91f0c26fed9208d659baf10eb2b4e4459480c244"
+  },
+  "promptSHA256": {
+    "full-rewrite.txt": "5f0ec44768bb435f737b20d2d50db6d2a0e9b2194f50496a90465c7a77753499",
+    "light-cleanup.txt": "aa4a5955388c1080e7083e1123eb5f37d44e50dbf2ecbbc55126a01ca61e0275",
+    "punctuation.txt": "327b25128ac05aef123514673e51bb5657c26ee1ea9a89daf9cfe66a7ee36c41",
+    "rewrite-verifier.txt": "e4ad28ea499b70af0ceb9ed69b1e86e5f3741adc9ddbf513f5478d962f3a320e"
+  },
+  "offlinePassed": 1015,
+  "offlineFailed": 0,
+  "correctionSuiteChecks": 69,
+  "correctionChecks": [
+    "correction: bilingual final corrections pass Light without losing the independent weekday",
+    "correction: bilingual final corrections pass Full basic checks",
+    "correction: Latin repair does not swallow an adjacent Chinese prefix",
+    "correction: multilingual alphabetic names still support explicit corrections",
+    "correction: multilingual alphabetic names still support explicit corrections",
+    "correction: multilingual alphabetic names still support explicit corrections",
+    "correction: same-unit 周 repair preserves an independent duration",
+    "correction: same-unit 天 repair preserves an independent duration",
+    "correction: same-unit 分鐘 repair preserves an independent duration",
+    "correction: same-unit 个月 repair preserves an independent duration",
+    "correction: ambiguous or different-unit duration is not repaired",
+    "correction: ambiguous or different-unit duration is not repaired",
+    "correction: ambiguous or different-unit duration is not repaired",
+    "correction: quoted correction cannot be applied as an instruction",
+    "correction: changed amount, negation, final day or independent day stays rejected",
+    "correction: changed amount, negation, final day or independent day stays rejected",
+    "correction: changed amount, negation, final day or independent day stays rejected",
+    "correction: changed amount, negation, final day or independent day stays rejected",
+    "correction: changed amount, negation, final day or independent day stays rejected",
+    "correction: final, independent and unit duration changes are hard failures even at loose threshold",
+    "correction: final, independent and unit duration changes are hard failures even at loose threshold",
+    "correction: final, independent and unit duration changes are hard failures even at loose threshold",
+    "correction: colon-delimited additional-point marker is not a quantity",
+    "correction: marker removal cannot also drop an independent one quantity",
+    "correction: colon-delimited additional-point marker is not a quantity",
+    "correction: marker removal cannot also drop an independent one quantity",
+    "correction: colon-delimited additional-point marker is not a quantity",
+    "correction: marker removal cannot also drop an independent one quantity",
+    "correction: real quantities remain protected",
+    "correction: real quantities remain protected",
+    "correction: real quantities remain protected",
+    "correction: real quantities remain protected",
+    "correction: retained or reworded discourse one cannot replace a missing quantity",
+    "correction: retained or reworded discourse one cannot replace a missing quantity",
+    "correction: retained or reworded discourse one cannot replace a missing quantity",
+    "correction: retained or reworded discourse one cannot replace a missing quantity",
+    "correction: retained or reworded discourse one cannot replace a missing quantity",
+    "correction: retained or reworded discourse one cannot replace a missing quantity",
+    "correction: retained or reworded discourse one cannot replace a missing quantity",
+    "correction: harmless marker punctuation or removal preserves real quantities",
+    "correction: harmless marker punctuation or removal preserves real quantities",
+    "correction: harmless marker punctuation or removal preserves real quantities",
+    "correction: harmless marker punctuation or removal preserves real quantities",
+    "correction: harmless marker punctuation or removal preserves real quantities",
+    "correction: small explicit false-start repair requires semantic approval, never local acceptance",
+    "correction: ordinary small paraphrase without an explicit false start cannot request verification",
+    "correction: a marker inside a quote cannot authorize unrelated rewording",
+    "correction: a broad false-start rewrite is ineligible for Light verification",
+    "correction: bounded Light repair is accepted only after a semantic PASS",
+    "correction: retained or removed discourse marker preserves the eligible comparison alternative",
+    "correction: retained or removed discourse marker reaches Light semantic approval",
+    "correction: discourse alternatives cannot hide changed or missing real quantities",
+    "correction: discourse alternatives cannot hide changed or missing real quantities",
+    "correction: discourse alternatives cannot hide changed or missing real quantities",
+    "correction: retained or removed discourse marker preserves the eligible comparison alternative",
+    "correction: retained or removed discourse marker reaches Light semantic approval",
+    "correction: discourse alternatives cannot hide changed or missing real quantities",
+    "correction: discourse alternatives cannot hide changed or missing real quantities",
+    "correction: discourse alternatives cannot hide changed or missing real quantities",
+    "correction: semantic FAIL preserves the exact complete source without recovery",
+    "correction: a critical unique detail omitted during a false-start repair remains rejected",
+    "correction: unavailable Light verifier retains raw and records provider recovery",
+    "correction: cancellation during Light verification propagates without delivering a result",
+    "correction: protected fact or ordinary paraphrase rejection never reaches Light verifier",
+    "correction: protected fact or ordinary paraphrase rejection never reaches Light verifier",
+    "correction: protected fact or ordinary paraphrase rejection never reaches Light verifier",
+    "correction: protected fact or ordinary paraphrase rejection never reaches Light verifier",
+    "correction: protected fact or ordinary paraphrase rejection never reaches Light verifier",
+    "correction: protected fact or ordinary paraphrase rejection never reaches Light verifier"
+  ],
+  "countedListPolicyChecks": [
+    "readability: counted request introductions cannot be skipped by native Light policy",
+    "readability: counted request introductions cannot be skipped by native Light policy",
+    "readability: counted request introductions cannot be skipped by native Light policy",
+    "readability: counted request introductions cannot be skipped by native Light policy",
+    "readability: counted request introductions cannot be skipped by native Light policy",
+    "readability: narrative counts, single requests and literal instructions are not counted-list cues",
+    "readability: narrative counts, single requests and literal instructions are not counted-list cues",
+    "readability: narrative counts, single requests and literal instructions are not counted-list cues",
+    "readability: narrative counts, single requests and literal instructions are not counted-list cues",
+    "readability: narrative counts, single requests and literal instructions are not counted-list cues",
+    "readability: narrative counts, single requests and literal instructions are not counted-list cues"
+  ],
+  "independentAudit": {
+    "passed": 32,
+    "total": 32,
+    "checks": [
+      {
+        "accepted": true,
+        "canVerifyFalseStart": false,
+        "name": "faithful_marker_removal",
+        "passed": true,
+        "ratio": 0,
+        "reason": "ok"
+      },
+      {
+        "accepted": true,
+        "canVerifyFalseStart": false,
+        "name": "faithful_marker_removal_numeric_spelling",
+        "passed": true,
+        "ratio": 0,
+        "reason": "ok"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_0",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_1",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_2",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_3",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_4",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_5",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_6",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_7",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_quantity_8",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_repeated_quantity_0",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_repeated_quantity_1",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "marker_cannot_pay_repeated_quantity_2",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": true,
+        "canVerifyFalseStart": false,
+        "name": "faithful_repeated_quantities",
+        "passed": true,
+        "ratio": 0,
+        "reason": "ok"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "amount_changed_after_removal",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "amount_deleted_after_removal",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": true,
+        "canVerifyFalseStart": false,
+        "name": "ordinary_unchanged_0",
+        "passed": true,
+        "ratio": 0,
+        "reason": "ok"
+      },
+      {
+        "accepted": true,
+        "canVerifyFalseStart": false,
+        "name": "ordinary_unchanged_1",
+        "passed": true,
+        "ratio": 0,
+        "reason": "ok"
+      },
+      {
+        "accepted": true,
+        "canVerifyFalseStart": false,
+        "name": "ordinary_unchanged_2",
+        "passed": true,
+        "ratio": 0,
+        "reason": "ok"
+      },
+      {
+        "accepted": true,
+        "canVerifyFalseStart": false,
+        "name": "quoted_unchanged",
+        "passed": true,
+        "ratio": 0,
+        "reason": "ok"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": true,
+        "name": "false_start_removal_stays_semantic",
+        "passed": true,
+        "ratio": 0.1320754716981132,
+        "reason": "a content word is missing"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "false_start_number_drop_hard_failure_0",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "false_start_number_drop_hard_failure_1",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "accepted": false,
+        "canVerifyFalseStart": false,
+        "name": "false_start_number_drop_hard_failure_2",
+        "passed": true,
+        "ratio": 1,
+        "reason": "a number's context changed"
+      },
+      {
+        "modelCue": true,
+        "name": "policy_0",
+        "passed": true
+      },
+      {
+        "modelCue": false,
+        "name": "policy_1",
+        "passed": true
+      },
+      {
+        "modelCue": false,
+        "name": "policy_2",
+        "passed": true
+      },
+      {
+        "modelCue": false,
+        "name": "policy_3",
+        "passed": true
+      },
+      {
+        "modelCue": false,
+        "name": "policy_4",
+        "passed": true
+      },
+      {
+        "modelCue": true,
+        "name": "policy_5",
+        "passed": true
+      },
+      {
+        "modelCue": false,
+        "name": "policy_6",
+        "passed": true
+      }
+    ]
+  },
+  "changesSinceB4": [
+    "B5 preserves a valid semantic-eligible comparison across later ineligible comparison alternatives. Ordinary hard-fact rejections still cannot use that path.",
+    "B5 adds one generic counted-request-introduction sentence to Light, plus native policy cues so these clear requests are not skipped before the model. Full and verifier prompt files remain unchanged.",
+    "B6 recognizes a retained One more thing phrase independent of punctuation. Only the optional marker-removed comparison also requires each ordered normalized number and its next two content tokens to match, so a retained or reworded discourse one cannot replace a dropped one backup. This is a hard check before semantic eligibility.",
+    "All other literal, language, quantity, duration, currency, negation, ending and cancellation protections remain in effect."
+  ],
+  "limits": "These are offline synthetic checks with injected responses and an independent local guard audit. They test safety/routing, not model correctness. The full provider study ran on B5; three focused provider cases ran on B6. No microphone or native insertion claim."
+}

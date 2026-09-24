@@ -1,0 +1,1132 @@
+{
+  "candidate": "B5",
+  "reviewedUTC": "2026-09-24T22:39:39.513283+00:00",
+  "reviewType": "Codex qualitative judgment against predeclared preferences, not a human study or a blinded vote.",
+  "binarySHA256": "f8384f0e27681c1a2d71bb7a58211922fcfa4bf3575d530b71f30c073085b808",
+  "binaryUnchanged": true,
+  "datasetSHA256": "a3b9d0c79dd3a55f56aa55ad8d51726fe32b33d61b9f148b96806cbaf39cbef6",
+  "model": "gpt-6-luna",
+  "executionStartedUTC": "2026-09-24T22:36:22.987274+00:00",
+  "executionFinishedUTC": "2026-09-24T22:36:57.931798+00:00",
+  "executionScope": "Same 12 synthetic fixtures, 24 live requests once each; no selective retries. Raw input is a reference, not another provider call.",
+  "rawExecutionRecordPolicy": "Unedited tool manifests and logs are retained locally. This public review omits workstation paths and command arrays while retaining every actual input/output, section decision, score and elapsed time.",
+  "guardSourceSHA256": {
+    "Sources/FnDictate/MeaningGuard.swift": "4b6974c6cdf34aa183f43b8815d988ac5bc6e11a61da31f64d989c05bf4746f4",
+    "Sources/FnDictate/MixedLanguageGuard.swift": "058263f72fcbf09f64af9056366e6888088dec51db5f6633475fcda9757759d1",
+    "Sources/FnDictate/RewriteVerification.swift": "374553aa41ebe1b5203af3d94260a2afa0fe4a2fc253eaa3c1808ec32a400ac7",
+    "Sources/FnDictate/LongTextProcessing.swift": "6e18b41474adf88b540e4db6159ec3066b644087f3503a3e0790b2d6c7a3cfe8",
+    "Sources/FnDictate/CorrectionGuardRegressionTests.swift": "b0bb458dccd1ef557556a522f4f5522c548f69a9e9628bd93615b7bd21d1b4c5",
+    "Sources/FnDictate/CleanupRegressionTests.swift": "ca86b918a9e4ebb7591fb1ba34663f78f0a60f3fe8e4203764e1ed4d5d79b866"
+  },
+  "promptSHA256": {
+    "full-rewrite.txt": "5f0ec44768bb435f737b20d2d50db6d2a0e9b2194f50496a90465c7a77753499",
+    "light-cleanup.txt": "aa4a5955388c1080e7083e1123eb5f37d44e50dbf2ecbbc55126a01ca61e0275",
+    "punctuation.txt": "327b25128ac05aef123514673e51bb5657c26ee1ea9a89daf9cfe66a7ee36c41",
+    "rewrite-verifier.txt": "e4ad28ea499b70af0ceb9ed69b1e86e5f3741adc9ddbf513f5478d962f3a320e"
+  },
+  "protocol": {
+    "createdBeforeExecutionUTC": "2026-09-24T22:06:32.398039+00:00",
+    "scope": "12 new synthetic clean-up challenges, Full and Light once each; raw input reference control. No personal transcripts, speech recognition or UI insertion.",
+    "sampling": "Purposive adversarial scenarios based on user preferences, not representative random sampling.",
+    "runsPerModePerCase": 1,
+    "selectiveRetryPolicy": "None; retain every output, fallback, error and timing.",
+    "judge": "Codex model-based qualitative review; not a blinded independent human study.",
+    "referenceInterpretation": "FreeFlow reference supports literal cleanup/instruction preservation; user additionally wants explicit lists and restrained Full rewriting.",
+    "referenceURL": "https://raw.githubusercontent.com/zachlatta/freeflow/main/Sources/PostProcessingService.swift",
+    "rubric": {
+      "factualFidelity": "Hard gate: retain every final substantive claim, qualifier, restriction, name and condition; no added fact/action. Abandoned wording of explicit self-corrections is not an independent fact. Raw reference always preserves literal content.",
+      "voiceTone": "1 strongly changes emotion/register; 3 usable but loses some voice; 5 preserves deliberate emphasis, directness and mixed-language tone.",
+      "fluency": "1 hard to read; 3 intelligible with awkwardness; 5 natural punctuation/grammar, especially Chinese and code boundaries.",
+      "structure": "1 obscures relationships; 3 readable but misses expected list/paragraph structure; 5 desired scanability with clear condition scope and no forced narrative list.",
+      "restraint": "1 executes/invents/sanitizes; 3 unnecessary paraphrase; 5 only justified cleanup, preserving clear phrasing.",
+      "preference": "Fidelity-failing alternatives cannot win. Among passing alternatives choose the most readable output consistent with the users conservative rewrite/tone/list preferences; ties allowed and justified. A raw win is valid."
+    }
+  },
+  "summary": {
+    "cases": 12,
+    "liveOutputs": 24,
+    "rawReferenceControls": 12,
+    "deliveredFactualGatePasses": 24,
+    "guardFallbacks": 3,
+    "appropriateGuardFallbacks": 3,
+    "cleanupGoalMisses": 2,
+    "partialGoalResults": 2,
+    "providerFallbacks": 0,
+    "providerErrors": 0,
+    "contentPreferences": {
+      "FullOnly": 2,
+      "LightOnly": 2,
+      "FullLightTie": 5,
+      "FullLightRawTie": 3
+    },
+    "latencySeconds": {
+      "full": {
+        "median": 1.1649489998817444,
+        "min": 0.8800079822540283,
+        "max": 2.956387996673584
+      },
+      "light": {
+        "median": 1.1888049840927124,
+        "min": 0.9505000114440918,
+        "max": 2.9083189964294434
+      }
+    },
+    "meanScores": {
+      "full": {
+        "factualFidelity": 5.0,
+        "voiceTone": 5.0,
+        "fluency": 4.833333333333333,
+        "structure": 4.666666666666667,
+        "restraint": 5.0
+      },
+      "light": {
+        "factualFidelity": 5.0,
+        "voiceTone": 5.0,
+        "fluency": 4.833333333333333,
+        "structure": 4.833333333333333,
+        "restraint": 5.0
+      },
+      "raw": {
+        "factualFidelity": 5.0,
+        "voiceTone": 5.0,
+        "fluency": 4.166666666666667,
+        "structure": 3.9166666666666665,
+        "restraint": 5.0
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseID": "handoff-two-asks",
+      "input": "Two separate asks for tomorrow's handoff: export the signup numbers by region, and send a screenshot of the pricing page with the annual option selected. Please don't combine the numbers with the screenshot; Luca needs them as separate files.",
+      "criteria": [
+        "Two list items: signup numbers by region; screenshot of pricing page with annual option selected.",
+        "Tomorrow deadline, separate-file requirement, and Luca remain; no invented owner or file format.",
+        "The final separate-file request applies to both deliverables, outside either bullet."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "Two separate asks for tomorrow's handoff:\n- Export the signup numbers by region.\n- Send a screenshot of the pricing page with the annual option selected.\n\nPlease don't combine the numbers with the screenshot; Luca needs them as separate files.",
+          "executionRecordID": "handoff-two-asks-full",
+          "elapsedSeconds": 2.125493049621582,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Two separate asks for tomorrow's handoff: export the signup numbers by region, and send a screenshot of the pricing page with the annual option selected. Please don't combine the numbers with the screenshot; Luca needs them as separate files.",
+              "proposed": "Two separate asks for tomorrow's handoff:\n- Export the signup numbers by region.\n- Send a screenshot of the pricing page with the annual option selected.\n\nPlease don't combine the numbers with the screenshot; Luca needs them as separate files.",
+              "reason": "semantic check accepted",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 4,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "Two separate asks for tomorrow's handoff:\n- export the signup numbers by region\n- send a screenshot of the pricing page with the annual option selected\n\nPlease don't combine the numbers with the screenshot; Luca needs them as separate files.",
+          "executionRecordID": "handoff-two-asks-light",
+          "elapsedSeconds": 1.244596004486084,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Two separate asks for tomorrow's handoff: export the signup numbers by region, and send a screenshot of the pricing page with the annual option selected. Please don't combine the numbers with the screenshot; Luca needs them as separate files.",
+              "proposed": "Two separate asks for tomorrow's handoff:\n- export the signup numbers by region\n- send a screenshot of the pricing page with the annual option selected\n\nPlease don't combine the numbers with the screenshot; Luca needs them as separate files.",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 4,
+            "structure": 3,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "Two separate asks for tomorrow's handoff: export the signup numbers by region, and send a screenshot of the pricing page with the annual option selected. Please don't combine the numbers with the screenshot; Luca needs them as separate files.",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full"
+      ],
+      "practicalModeForThisCase": "full",
+      "rationale": "Both now produce the two distinct list items and preserve the separate-file instruction outside the list. Full has a small polish advantage through complete-sentence capitalization and punctuation. Light's lowercase fragments are still usable and the B4 no-list miss is absent."
+    },
+    {
+      "caseID": "bilingual-update-two-areas",
+      "input": "给客户的 update 我想分成两块，一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。另一块是 billing：月付价格没变，年付的折扣还没有确认。别写成我们已经决定涨价了。",
+      "criteria": [
+        "Two distinct areas become readable items while preserving their names and all qualifications.",
+        "Existing accounts still work; only new accounts reverify; monthly price unchanged; annual discount unconfirmed.",
+        "Do not assert a decided price increase; keep mixed-language voice."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "给客户的 update 我想分成两块：\n- 一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。\n- 另一块是 billing：月付价格没变，年付的折扣还没有确认。\n\n别写成我们已经决定涨价了。",
+          "executionRecordID": "bilingual-update-two-areas-full",
+          "elapsedSeconds": 2.1577550172805786,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "给客户的 update 我想分成两块，一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。另一块是 billing：月付价格没变，年付的折扣还没有确认。别写成我们已经决定涨价了。",
+              "proposed": "给客户的 update 我想分成两块：\n- 一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。\n- 另一块是 billing：月付价格没变，年付的折扣还没有确认。\n\n别写成我们已经决定涨价了。",
+              "reason": "semantic check accepted",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "给客户的 update 我想分成两块：\n\n- 一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。\n- 另一块是 billing：月付价格没变，年付的折扣还没有确认。\n\n别写成我们已经决定涨价了。",
+          "executionRecordID": "bilingual-update-two-areas-light",
+          "elapsedSeconds": 1.6612180471420288,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "给客户的 update 我想分成两块，一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。另一块是 billing：月付价格没变，年付的折扣还没有确认。别写成我们已经决定涨价了。",
+              "proposed": "给客户的 update 我想分成两块：\n\n- 一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。\n- 另一块是 billing：月付价格没变，年付的折扣还没有确认。\n\n别写成我们已经决定涨价了。",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 3,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "给客户的 update 我想分成两块，一块是登录：旧账号还是可以用，只有新账号需要重新验证邮箱。另一块是 billing：月付价格没变，年付的折扣还没有确认。别写成我们已经决定涨价了。",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light"
+      ],
+      "practicalModeForThisCase": "light",
+      "rationale": "Both preserve the login and billing qualifications, mixed languages and warning against claiming a decided price increase. Extra blank-line spacing in Light does not change readability enough to justify a preference."
+    },
+    {
+      "caseID": "shared-condition-and-exception",
+      "input": "If Priya signs off and the sandbox test passes, here's the rollout checklist: copy the customer settings without copying their API keys; switch the test group to the new endpoint; ask Owen to watch the error rate for twenty minutes. If either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+      "criteria": [
+        "Both approval and passed sandbox test gate all three checklist items; neither condition may attach only to one item.",
+        "Copy settings but not keys; only test group changes endpoint; Owen monitors twenty minutes.",
+        "If either condition fails do none; outside customers remain on old endpoint regardless."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "If Priya signs off and the sandbox test passes, here's the rollout checklist:\n- Copy the customer settings without copying their API keys.\n- Switch the test group to the new endpoint.\n- Ask Owen to watch the error rate for twenty minutes.\n\nIf either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+          "executionRecordID": "shared-condition-and-exception-full",
+          "elapsedSeconds": 1.739166021347046,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "If Priya signs off and the sandbox test passes, here's the rollout checklist: copy the customer settings without copying their API keys; switch the test group to the new endpoint; ask Owen to watch the error rate for twenty minutes. If either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+              "proposed": "If Priya signs off and the sandbox test passes, here's the rollout checklist:\n- Copy the customer settings without copying their API keys.\n- Switch the test group to the new endpoint.\n- Ask Owen to watch the error rate for twenty minutes.\n\nIf either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+              "reason": "semantic check accepted",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "If Priya signs off and the sandbox test passes, here's the rollout checklist:\n- copy the customer settings without copying their API keys;\n- switch the test group to the new endpoint;\n- ask Owen to watch the error rate for twenty minutes.\n\nIf either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+          "executionRecordID": "shared-condition-and-exception-light",
+          "elapsedSeconds": 1.7220299243927002,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "If Priya signs off and the sandbox test passes, here's the rollout checklist: copy the customer settings without copying their API keys; switch the test group to the new endpoint; ask Owen to watch the error rate for twenty minutes. If either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+              "proposed": "If Priya signs off and the sandbox test passes, here's the rollout checklist:\n- copy the customer settings without copying their API keys;\n- switch the test group to the new endpoint;\n- ask Owen to watch the error rate for twenty minutes.\n\nIf either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 4,
+            "structure": 3,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "If Priya signs off and the sandbox test passes, here's the rollout checklist: copy the customer settings without copying their API keys; switch the test group to the new endpoint; ask Owen to watch the error rate for twenty minutes. If either condition fails, do none of those things. Existing customers outside the test group should stay on the old endpoint either way.",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light"
+      ],
+      "practicalModeForThisCase": "light",
+      "rationale": "Both keep both prerequisites outside all three items, plus the do-nothing exception and unchanged outside group. Full uses complete sentences; Light uses a semicolon-linked list. Both preserve all action owners, exclusions and duration."
+    },
+    {
+      "caseID": "chinese-quotes-code",
+      "input": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+      "criteria": [
+        "Preserve quoted wording and exact code characters; Chinese punctuation surrounds but never mutates code.",
+        "Speaker agrees with Chen; user message should say saving/wait, explicitly not saved-success.",
+        "Keep merge/blocker in English and distinguish quotation from an instruction to the cleanup model."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+          "executionRecordID": "chinese-quotes-code-full",
+          "elapsedSeconds": 1.0974400043487549,
+          "fullyCleaned": false,
+          "guardFallbackCount": 1,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": false,
+              "original": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+              "proposed": "陈姐说：“先别 merge，这不是 blocker。”我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+              "reason": "semantic check rejected",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+          "executionRecordID": "chinese-quotes-code-light",
+          "elapsedSeconds": 1.481307029724121,
+          "fullyCleaned": false,
+          "guardFallbackCount": 1,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": false,
+              "original": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+              "proposed": "陈姐说：“先别 merge，这不是 blocker。”我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+              "reason": "a URL, code fragment or literal value changed",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "陈姐说“先别 merge，这不是 blocker”，我同意。README 里要保留 `cache_key = \"a,b\"`，命令还是 `tool --dry-run --limit=3`，不要把代码里的逗号换成中文逗号。至于用户看到的提示，我想用“正在保存，请稍候”，不是“保存成功”。",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light",
+        "raw"
+      ],
+      "practicalModeForThisCase": "raw",
+      "rationale": "Both outputs equal the already-good original, preserving exact code and quoted wording. The rejected proposals add punctuation inside a protected quote. Keeping the original is preferable and is an appropriate safeguard rather than a quality failure."
+    },
+    {
+      "caseID": "mixed-self-correction",
+      "input": "这个 pilot 先跑六周，不对，八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Tuesday，sorry，Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+      "criteria": [
+        "Final pilot length is eight weeks; remove abandoned six weeks and correction marker.",
+        "Budget remains USD 20,000; kickoff Wednesday afternoon; independently quoted customer Tuesday stays.",
+        "Keep Chinese/English switching and do not turn scope correction into a budget correction."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 3,
+            "structure": 4,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "miss",
+          "deliveredText": "这个 pilot 先跑六周，不对，八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Tuesday，sorry，Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+          "executionRecordID": "mixed-self-correction-full",
+          "elapsedSeconds": 1.7367238998413086,
+          "fullyCleaned": false,
+          "guardFallbackCount": 1,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": false,
+              "original": "这个 pilot 先跑六周，不对，八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Tuesday，sorry，Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+              "proposed": "这个 pilot 先跑八周。Keep the budget at USD 20,000. Kickoff 是 Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+              "reason": "semantic check rejected",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "这个 pilot 先跑八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+          "executionRecordID": "mixed-self-correction-light",
+          "elapsedSeconds": 0.9505000114440918,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "这个 pilot 先跑六周，不对，八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Tuesday，sorry，Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+              "proposed": "这个 pilot 先跑八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 3,
+            "structure": 4,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "这个 pilot 先跑六周，不对，八周；预算不是说要改，我刚才改的只是时长。Keep the budget at USD 20,000. Kickoff 是 Tuesday，sorry，Wednesday afternoon，但客户自己邮件里写的 Tuesday 还是要留在引用里。",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "light"
+      ],
+      "practicalModeForThisCase": "light",
+      "rationale": "Light correctly keeps eight weeks and Wednesday afternoon while preserving the independent Tuesday mention and the scope/budget clarification. Full safely keeps the raw transcript: its proposed rewrite deletes the entire clarification that only duration was being corrected, not the budget. Rejecting that deletion is correct. The delivered Full text still has abandoned wording and correction markers, so it does not meet the cleanup goal. No guard weakening is warranted."
+    },
+    {
+      "caseID": "unresolved-people-and-times",
+      "input": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now just keep both options open, okay?",
+      "criteria": [
+        "Preserve both possible people and the option of not changing owner; no decision is final.",
+        "Thursday or next Monday are alternatives dependent on customer, not two appointments.",
+        "Keep tentative conversational tone and mixed languages; a forced action checklist is undesirable."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四或者下周一，取决于客户那边，不是说两个时间都约。For now, just keep both options open, okay?",
+          "executionRecordID": "unresolved-people-and-times-full",
+          "elapsedSeconds": 1.1204699277877808,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now just keep both options open, okay?",
+              "proposed": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四或者下周一，取决于客户那边，不是说两个时间都约。For now, just keep both options open, okay?",
+              "reason": "near-verbatim rewrite, semantic check skipped",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now, just keep both options open, okay?",
+          "executionRecordID": "unresolved-people-and-times-light",
+          "elapsedSeconds": 1.1953489780426025,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now just keep both options open, okay?",
+              "proposed": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now, just keep both options open, okay?",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 4,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "我们可能让 Mei 或者 Alex 跟进，也可能先不换负责人，我还没想好。时间大概是周四，或者下周一，取决于客户那边，不是说两个时间都约。For now just keep both options open, okay?",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light"
+      ],
+      "practicalModeForThisCase": "light",
+      "rationale": "Both preserve the possible owners, no-change option, alternative dates, customer dependency and undecided tone. Full slightly smooths the Chinese date clause; both punctuate For now naturally. No decision or checklist is invented."
+    },
+    {
+      "caseID": "spelled-email-and-name",
+      "input": "Can you send the draft to J O A N at example dot com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+      "criteria": [
+        "Normalize the unambiguous spelled address to joan@example.com without inventing a real address.",
+        "Keep the question as a question, Renée cc, Joan spelling clarification, Anaïs final-only restriction.",
+        "Preserve exact subject text, diacritics, and distinction between draft and final; do not send anything."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "Can you send the draft to joan@example.com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+          "executionRecordID": "spelled-email-and-name-full",
+          "elapsedSeconds": 0.8800079822540283,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Can you send the draft to joan@example.com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+              "proposed": "Can you send the draft to joan@example.com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+              "reason": "near-verbatim rewrite, semantic check skipped",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "Can you send the draft to joan@example.com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+          "executionRecordID": "spelled-email-and-name-light",
+          "elapsedSeconds": 1.0460420846939087,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Can you send the draft to joan@example.com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+              "proposed": "Can you send the draft to joan@example.com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 3,
+            "structure": 4,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "Can you send the draft to J O A N at example dot com and cc Renée? That's Joan with no extra n. Anaïs only needs the final version, not this draft. Please leave the subject as Q3 follow-up.",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light"
+      ],
+      "practicalModeForThisCase": "light",
+      "rationale": "Both produce joan@example.com and keep the spelling clarification, Renée, Anaïs, exact subject and draft/final restrictions. Both retain the question rather than performing the requested action. The displayed text is identical."
+    },
+    {
+      "caseID": "deliberate-emotion-and-repetition",
+      "input": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+      "criteria": [
+        "Retain deliberate repetition, frustration, profanity and direct questions; do not sanitize or soften.",
+        "No apology is requested; rollback is wanted tonight; shipment happened despite repeated objections.",
+        "Natural paragraph breaks are welcome, corporate email polish or new claims are not."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+          "executionRecordID": "deliberate-emotion-and-repetition-full",
+          "elapsedSeconds": 1.0015209913253784,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+              "proposed": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+              "reason": "near-verbatim rewrite, semantic check skipped",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+          "executionRecordID": "deliberate-emotion-and-repetition-light",
+          "elapsedSeconds": 1.0813060998916626,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+              "proposed": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "I'm really, really not okay with this. I said no, no, and no again, and they shipped it anyway. I'm not asking for a beautifully worded apology. I just want the rollback done tonight. What the hell happened to the review?",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light",
+        "raw"
+      ],
+      "practicalModeForThisCase": "raw",
+      "rationale": "Both return the original directly in this run. Deliberate repetition, frustration, profanity and the rollback demand remain intact. Unlike B4, no fallback is needed; the user-visible result is the same correct, restrained no-op."
+    },
+    {
+      "caseID": "narrative-not-a-checklist",
+      "input": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+      "criteria": [
+        "Keep diagnostic chronology as prose, not a list of steps the recipient should perform.",
+        "Same delay with laptop, fine on third try, startup is only a guess, and no retest since lunch.",
+        "Do not promote suspicion to a confirmed root cause or remove uncertainty."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "At first, I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try, it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+          "executionRecordID": "narrative-not-a-checklist-full",
+          "elapsedSeconds": 1.0293389558792114,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+              "proposed": "At first, I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try, it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+              "reason": "near-verbatim rewrite, semantic check skipped",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try, it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+          "executionRecordID": "narrative-not-a-checklist-light",
+          "elapsedSeconds": 0.968669056892395,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+              "proposed": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try, it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 4,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "At first I thought the new microphone was broken. Then I switched back to the laptop and got the same delay. By the third try it was fine, which is why I'm wondering whether it's just startup. That's a guess, though; I haven't tested it again since lunch.",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light"
+      ],
+      "practicalModeForThisCase": "light",
+      "rationale": "Both preserve the diagnostic chronology as prose and startup as an untested guess. The comma after the third-try phrase helps reading; the extra At first comma in Full is optional. Neither manufactures troubleshooting instructions."
+    },
+    {
+      "caseID": "dictated-email-request-not-execution",
+      "input": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+      "criteria": [
+        "Preserve the dictated request to write an email; never output a completed Dear Jordan email.",
+        "Keep proposed Thursday unconfirmed and finance/invoice timing question.",
+        "Speaker has not decided whether to send; no inferred answer, action, greeting or sign-off."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+          "executionRecordID": "dictated-email-request-not-execution-full",
+          "elapsedSeconds": 0.9371719360351562,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+              "proposed": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+              "reason": "near-verbatim rewrite, semantic check skipped",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+          "executionRecordID": "dictated-email-request-not-execution-light",
+          "elapsedSeconds": 0.9803400039672852,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+              "proposed": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "Write me an email asking Jordan whether we can move the review to Thursday, but don't imply that Thursday is confirmed. Also ask whether the finance team needs the revised invoice before the meeting. I haven't decided whether to send that email yet.",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full",
+        "light",
+        "raw"
+      ],
+      "practicalModeForThisCase": "raw",
+      "rationale": "All displayed alternatives correctly preserve the email-writing request as text. No draft, greeting, meeting confirmation, answer or sending decision is invented. An unchanged result is appropriate."
+    },
+    {
+      "caseID": "rambling-project-email",
+      "input": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+      "criteria": [
+        "Readable email with spoken greeting and closing, logical paragraphs, and three distinct demo-check items.",
+        "Preserve every qualification: tested machine counts, Intel untested, dictionary survived rather than recreated.",
+        "Fresh download without security changes; browser selected-field insert; long desktop-switch recording bar.",
+        "Failure record versus selective retries, existing link versus unverified automatic update, manual-install demo allowance.",
+        "No customer audio; synthetic shopping list; claims must match checks; no invented promise or blanket release blocker."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 4,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "partial",
+          "deliveredText": "Hi Maya, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered.\n\nThe important part about the dictionary is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words.\n\nFor the demo, there are three checks I still want:\n- Open the app from a fresh download without touching the security settings.\n- Dictate a short message into the browser and make sure it lands in the selected field.\n- Dictate a longer message while switching desktops to see whether the small recording bar stays visible.\n\nIf any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified.\n\nOne more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+          "executionRecordID": "rambling-project-email-full",
+          "elapsedSeconds": 2.956387996673584,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+              "proposed": "Hi Maya, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered.\n\nThe important part about the dictionary is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words.\n\nFor the demo, there are three checks I still want:\n- Open the app from a fresh download without touching the security settings.\n- Dictate a short message into the browser and make sure it lands in the selected field.\n- Dictate a longer message while switching desktops to see whether the small recording bar stays visible.\n\nIf any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified.\n\nOne more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+              "reason": "semantic check accepted",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 4,
+            "structure": 3,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "partial",
+          "deliveredText": "Hi Maya, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The important part about the dictionary is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words.\n\nFor the demo there are three checks I still want:\n- open the app from a fresh download without touching the security settings,\n- dictate a short message into the browser and make sure it lands in the selected field, and\n- dictate a longer message while switching desktops to see whether the small recording bar stays visible.\n\nIf any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. One more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+          "executionRecordID": "rambling-project-email-light",
+          "elapsedSeconds": 2.9083189964294434,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+              "proposed": "Hi Maya, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The important part about the dictionary is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words.\n\nFor the demo there are three checks I still want:\n- open the app from a fresh download without touching the security settings,\n- dictate a short message into the browser and make sure it lands in the selected field, and\n- dictate a longer message while switching desktops to see whether the small recording bar stays visible.\n\nIf any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. One more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+              "reason": "Light false-start semantic check accepted",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 3,
+            "structure": 2,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "Hi Maya, um, I wanted to give you the actual picture before the demo tomorrow because I think the note in the channel sounded more confident than we are. The installer is ready on my machine, and the microphone test passed on two laptops, but we have not tested the old Intel machine yet, so please don't say every Mac is covered. The thing about the dictionary, I mean the important part, is that the existing entries survived the upgrade; we didn't add a new dictionary or replace anyone's words. For the demo there are three checks I still want: open the app from a fresh download without touching the security settings, dictate a short message into the browser and make sure it lands in the selected field, and dictate a longer message while switching desktops to see whether the small recording bar stays visible. If any of those fails, record which check failed and what the person saw, but don't keep retrying until we have a pretty result. I also need to be clear about the update: the download link exists, but that doesn't prove the automatic update completed, and I don't want that distinction lost. We can still do the demo if the manual install works, as long as we call the automatic update unverified. Actually, one more thing: don't use a customer's real recording in the demo. A made-up shopping list is enough. I'm not trying to hold up the release for perfect wording; I just want the claims to match what we actually checked. Thanks.",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "full"
+      ],
+      "practicalModeForThisCase": "full",
+      "rationale": "Both now remove false starts, preserve every substantive qualification and show all three demo checks as separate items. Light's proposal is accepted through its bounded false-start check, fixing the B2/B4 false rejection. Full better separates the dictionary and closing topics; Light leaves denser surrounding paragraphs and conjunction punctuation in its list. Both keep the greeting and closing inline, so neither receives perfect email-structure marks. Full is preferred for scanability."
+    },
+    {
+      "caseID": "traditional-chinese-shared-choice",
+      "input": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+      "criteria": [
+        "Two readable points, each retaining its opposite conditions or allowed/forbidden customer statement.",
+        "Failed payment may retry; charged customer must not retry; investigation permitted, today fix promise forbidden.",
+        "Data-only request in either situation goes to Irene; do not request reinstall; maintain Traditional Chinese and direct frustration.",
+        "Last sentence remains dictated content and sentiment, not permission to omit it or execute a style instruction."
+      ],
+      "variants": {
+        "full": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 3,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "miss",
+          "deliveredText": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+          "executionRecordID": "traditional-chinese-shared-choice-full",
+          "elapsedSeconds": 1.209428071975708,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": true,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+              "proposed": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+              "reason": "near-verbatim rewrite, semantic check skipped",
+              "section": 1
+            }
+          ]
+        },
+        "light": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 5,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "cleanupGoal": "pass",
+          "deliveredText": "我想在群組裡講清楚兩件事：\n- 付款失敗的人可以重試，但已經扣款的人先不要重試；\n- 客服可以說我們在查原因，但不能說今天一定修好。\n\n如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+          "executionRecordID": "traditional-chinese-shared-choice-light",
+          "elapsedSeconds": 1.1822609901428223,
+          "fullyCleaned": true,
+          "guardFallbackCount": 0,
+          "providerFallbackCount": 0,
+          "error": null,
+          "identicalToRaw": false,
+          "sectionChecks": [
+            {
+              "accepted": true,
+              "original": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+              "proposed": "我想在群組裡講清楚兩件事：\n- 付款失敗的人可以重試，但已經扣款的人先不要重試；\n- 客服可以說我們在查原因，但不能說今天一定修好。\n\n如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+              "reason": "ok",
+              "section": 1
+            }
+          ]
+        },
+        "raw": {
+          "scores": {
+            "factualFidelity": 5,
+            "voiceTone": 5,
+            "fluency": 5,
+            "structure": 3,
+            "restraint": 5
+          },
+          "factualGate": "pass",
+          "deliveredText": "我想在群組裡講清楚兩件事：付款失敗的人可以重試，但已經扣款的人先不要重試；客服可以說我們在查原因，但不能說今天一定修好。如果對方只想拿回資料，這兩種情況都先交給 Irene，別叫人再裝一次 app。語氣可以直接一點，我真的不想讓客戶一直重複同樣的步驟。",
+          "controlType": "Literal original input reference, not another cleanup request or a new native no-rewrite test."
+        }
+      },
+      "contentPreference": [
+        "light"
+      ],
+      "practicalModeForThisCase": "light",
+      "rationale": "Light produces the two requested points with all conditions and Traditional Chinese intact. Full instead returns the original paragraph, with no safeguard fallback. Meaning and tone remain correct, but Full misses the explicit two-topic list layout. This stochastic formatting miss is retained and disclosed rather than selectively retried."
+    }
+  ],
+  "releaseRecommendation": "The prior Light correction, counted-asks and long-email rejection issues are resolved in this complete run. Keep the three appropriate safeguards. Disclose that Full sometimes retains uncleaned corrections when its rewrite drops content and can still miss a stated list; do not claim perfect formatting or a human preference study. No further selective reruns were made.",
+  "limitations": [
+    "Purposive small synthetic text sample, one stochastic request per mode/case; future prompts, dictionaries and real speech can differ.",
+    "Same model family assisted the review; scores are judgments, not independent human votes.",
+    "Raw controls are unchanged input text, not another live model request.",
+    "CLI requests Light cleanup even where the native app might skip it; speech recognition, physical Fn, insertion, UI rendering and native no-rewrite path were not exercised.",
+    "Latency is cleanup only and includes checks/fallbacks; no microphone, speech-recognition or keyboard insertion time.",
+    "This is an arm64 candidate cleanup evaluation. The binary hash identifies the tested candidate, not a universal release DMG or a live speech/insertion test.",
+    "Stochastic outputs differ between B2, B4 and B5. A changed outcome cannot by itself be attributed to the guard code change when the proposed model text also changed."
+  ]
+}

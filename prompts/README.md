@@ -2,6 +2,8 @@
 
 These UTF-8 files are the app's public default instructions. They describe our implementation, not Typeless or Wispr Flow's proprietary prompts.
 
+The current defaults use the user's requested cleanup contract: edit spoken text into natural writing while preserving its content, and use vocabulary or context only to resolve spelling. The supplied [FreeFlow post-processing reference](https://raw.githubusercontent.com/zachlatta/freeflow/main/Sources/PostProcessingService.swift), reviewed on September 24, 2026, also distinguishes transcript cleanup from a separate selected-text editing mode. Dictation here continues to treat spoken requests as text; the reference's command mode is not enabled. Our defaults retain the requested English/Chinese list formatting, independent fidelity checks and exact-literal protections.
+
 | File | Used for |
 | --- | --- |
 | [full-rewrite.txt](full-rewrite.txt) | Full mode's editable style instructions: restrained rewriting and readable structure. |

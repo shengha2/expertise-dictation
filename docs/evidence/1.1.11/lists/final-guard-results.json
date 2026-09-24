@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "candidate": "B2 final guard extension, same B1 prompt text",
+  "binarySHA256": "b86bdb5fb69b4e400ff7899e10f92763e0d12f72cb09104827fbb2c26032e983",
+  "sourceSHA256": {
+    "Sources/FnDictate/RewriteVerification.swift": "616f0d9b50719984afe7c2ade665691747ba50385796a9c016389c1dcd35b48c",
+    "Sources/FnDictate/ReadabilityRegressionTests.swift": "15d7b4202f14dd6a7cbd06a7b907ea956c4db56379e3d54bd254aada571f0e4a"
+  },
+  "offlinePassed": 877,
+  "focusedCases": 5,
+  "observedSemanticChecks": 5,
+  "guardFallbacks": 0,
+  "providerFallbacks": 0,
+  "cases": [
+    {
+      "id": "default-en-condition-full",
+      "input": "If approved first Mira checks 12 cases second Chen must not publish before 4:30.",
+      "output": "If approved:\n- First, Mira checks 12 cases.\n- Second, Chen must not publish before 4:30.",
+      "criteria": [
+        "Use two list lines and keep If approved in the introduction so it governs the whole list.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments."
+      ],
+      "customStyleOverride": "",
+      "elapsedSeconds": 1.6107749938964844,
+      "sectionChecks": [
+        {
+          "accepted": true,
+          "original": "If approved first Mira checks 12 cases second Chen must not publish before 4:30.",
+          "proposed": "If approved:\n- First, Mira checks 12 cases.\n- Second, Chen must not publish before 4:30.",
+          "reason": "semantic check accepted",
+          "section": 1
+        }
+      ],
+      "scopePreserved": true
+    },
+    {
+      "id": "default-zh-condition-full",
+      "input": "如果批准第一 Mira 检查 12 个案例第二 Chen 不要在 4:30 之前发布",
+      "output": "如果批准：\n- 第一，Mira 检查 12 个案例。\n- 第二，Chen 不要在 4:30 之前发布。",
+      "criteria": [
+        "Keep the shared condition outside both list items. It must apply to the whole list.",
+        "Preserve all names, numeric tokens, negation, order and content."
+      ],
+      "customStyleOverride": "",
+      "elapsedSeconds": 1.5533180236816406,
+      "sectionChecks": [
+        {
+          "accepted": true,
+          "original": "如果批准第一 Mira 检查 12 个案例第二 Chen 不要在 4:30 之前发布",
+          "proposed": "如果批准：\n- 第一，Mira 检查 12 个案例。\n- 第二，Chen 不要在 4:30 之前发布。",
+          "reason": "semantic check accepted",
+          "section": 1
+        }
+      ],
+      "scopePreserved": true
+    },
+    {
+      "id": "ordinal-en-condition-full",
+      "input": "If approved first Mira checks 12 cases second Chen must not publish before 4:30.",
+      "output": "If approved:\nFirst\nMira checks 12 cases.\n\nSecond\nChen must not publish before 4:30.",
+      "criteria": [
+        "Use two list lines and keep If approved in the introduction so it governs the whole list.",
+        "Keep every substantive detail. No invented numbers, owners, requests or commitments.",
+        "No bullet symbols; retain the original ordinal labels on separate lines."
+      ],
+      "customStyleOverride": "Keep the original words. Format explicit item labels on separate lines, using First and Second or the spoken Chinese ordinal labels without any bullet symbols. Keep a shared condition on its own introduction line outside every item. Return only the transcript.",
+      "elapsedSeconds": 1.3830149173736572,
+      "sectionChecks": [
+        {
+          "accepted": true,
+          "original": "If approved first Mira checks 12 cases second Chen must not publish before 4:30.",
+          "proposed": "If approved:\nFirst\nMira checks 12 cases.\n\nSecond\nChen must not publish before 4:30.",
+          "reason": "semantic check accepted",
+          "section": 1
+        }
+      ],
+      "scopePreserved": true
+    },
+    {
+      "id": "ordinal-zh-condition-full",
+      "input": "如果批准第一 Mira 检查 12 个案例第二 Chen 不要在 4:30 之前发布",
+      "output": "如果批准：\n\n第一\nMira 检查 12 个案例。\n\n第二\nChen 不要在 4:30 之前发布。",
+      "criteria": [
+        "Keep the shared condition outside both list items. It must apply to the whole list.",
+        "Preserve all names, numeric tokens, negation, order and content.",
+        "No bullet symbols; retain the original ordinal labels on separate lines."
+      ],
+      "customStyleOverride": "Keep the original words. Format explicit item labels on separate lines, using First and Second or the spoken Chinese ordinal labels without any bullet symbols. Keep a shared condition on its own introduction line outside every item. Return only the transcript.",
+      "elapsedSeconds": 1.5478309392929077,
+      "sectionChecks": [
+        {
+          "accepted": true,
+          "original": "如果批准第一 Mira 检查 12 个案例第二 Chen 不要在 4:30 之前发布",
+          "proposed": "如果批准：\n\n第一\nMira 检查 12 个案例。\n\n第二\nChen 不要在 4:30 之前发布。",
+          "reason": "semantic check accepted",
+          "section": 1
+        }
+      ],
+      "scopePreserved": true
+    },
+    {
+      "id": "ordinal-zh-yishi-condition-full",
+      "input": "只有测试通过一是更新安装包二是更新指南",
+      "output": "只有测试通过：\n\n一是更新安装包。\n二是更新指南。",
+      "criteria": [
+        "Keep the shared condition outside both items, applying to the whole list.",
+        "Keep 一是 and 二是 as separate ordinal lines without bullet symbols.",
+        "Preserve every original word and meaning."
+      ],
+      "customStyleOverride": "Keep the original words. Format explicit item labels on separate lines, using First and Second or the spoken Chinese ordinal labels without any bullet symbols. Keep a shared condition on its own introduction line outside every item. Return only the transcript.",
+      "elapsedSeconds": 1.8883049488067627,
+      "sectionChecks": [
+        {
+          "accepted": true,
+          "original": "只有测试通过一是更新安装包二是更新指南",
+          "proposed": "只有测试通过：\n\n一是更新安装包。\n二是更新指南。",
+          "reason": "semantic check accepted",
+          "section": 1
+        }
+      ],
+      "scopePreserved": true
+    }
+  ],
+  "scope": "Two default-prompt cases and three custom styles that force ordinal-only lines. All retained global conditions outside items and went through semantic verification. These five are guard-routing/fidelity checks, not a claim of preferred prose or typography.",
+  "limitation": "The two forced label-only styles separate an ordinal heading from its body on another line. This is reported as observed output, not as a preferred default layout. The main B1 cases separately evaluate default list readability."
+}

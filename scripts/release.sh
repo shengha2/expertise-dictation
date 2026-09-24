@@ -22,7 +22,7 @@ export BUILD_DIR="${BUILD_DIR:-$ROOT/build/distribution-$VERSION}"
 export ARCHS="${ARCHS:-arm64 x86_64}"
 if [[ "$MODE" != "--local" ]]; then
   if [[ "${SKIP_BUILD:-0}" == 1 ]]; then
-    python3 "$ROOT/scripts/configure-hosted-service.py" --check-release-version "$VERSION" "$BUILD_DIR/Expertise Dictation.app/Contents/Info.plist"
+    python3 "$ROOT/scripts/configure-hosted-service.py" --check-release-version "$VERSION" "$BUILD_DIR/Expertise Typer.app/Contents/Info.plist"
   else
     python3 "$ROOT/scripts/configure-hosted-service.py" --check-release-version "$VERSION"
   fi
@@ -35,7 +35,7 @@ else
   export SIGN_IDENTITY=-
 fi
 if [[ "${SKIP_BUILD:-0}" != 1 ]]; then "$ROOT/scripts/build.sh"; fi
-BUILT_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$BUILD_DIR/Expertise Dictation.app/Contents/Info.plist")"
+BUILT_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$BUILD_DIR/Expertise Typer.app/Contents/Info.plist")"
 [[ "$BUILT_VERSION" == "$VERSION" ]] || { echo "error: app version $BUILT_VERSION differs from requested version $VERSION; rebuild first" >&2; exit 1; }
 SKIP_BUILD=1 "$ROOT/scripts/test.sh"
 "$ROOT/scripts/make-dmg.sh" "$MODE"
