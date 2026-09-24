@@ -23,6 +23,8 @@ The earlier integrated development candidate **a9** builds for both Apple silico
 
 The final optimized universal **personal r2** candidate passed **786 offline checks** and **129 controller checks**, with zero failures. It is Developer ID signed, embeds `ExpertiseServiceMode=personal`, and contains no hosted-service URL. Its executable SHA-256 is `2e79cc268a625cc3a027bbf8b0ef1afe312f797e848ad61afbfe20a321f63677`. These counts are separate from the earlier debug candidate. The new menu action preserves the current tab when an inline draft exists and defers a staged restart or open editing sheet with an explanation. An isolated new-build UI attempt was stopped before interactions after its separate test profile was confused with the daily app; it is not counted as a completed native UI test.
 
+After manually installing the verified public DMG over 1.1.8, native checks confirmed **Version 1.1.9** on Home, a successful Home update check with its button enabled again, and the menu action opening Home plus Sparkle’s “1.1.9 is currently the newest version” alert. The original dictionary, replacement rules and saved provider keys were preserved. This is a successful manual DMG upgrade and native update-check test; it does not establish an automatic production installation/relaunch cycle.
+
 The offline total includes 84 updater/draft-state checks and 40 onboarding/Home checks. The controller suite uses injected providers and insertion callbacks; it does not record a microphone or type into an external app.
 
 ### Native controls and insertion
@@ -67,7 +69,7 @@ A later active-console run of the **same frozen Timer diagnostic** passed all **
 
 ## Personal release status and known limitations
 
-- Apple accepted both app and DMG; stapling, Gatekeeper and public-download checks passed. The DMG SHA-256 is `063afbd8833e42cf9f8e29f18305a4009295f45829c2ee631d6c9928f50423c8`. The existing signed update feed now offers 1.1.9. Official Sparkle information probes using isolated 1.1.7 and 1.1.8 host versions both discovered 1.1.9, and a 1.1.9 host correctly reported no newer update. These are discovery checks, not installed upgrade cycles. The downloaded notarized DMG was also installed manually over this Mac's 1.1.8 app, with the prior app backed up; native post-install checks are recorded separately.
+- Apple accepted both app and DMG; stapling, Gatekeeper and public-download checks passed. The DMG SHA-256 is `063afbd8833e42cf9f8e29f18305a4009295f45829c2ee631d6c9928f50423c8`. The existing signed update feed now offers 1.1.9. Official Sparkle information probes using isolated 1.1.7 and 1.1.8 host versions both discovered 1.1.9, and a 1.1.9 host correctly reported no newer update. These are discovery checks, not installed upgrade cycles. The downloaded notarized DMG was also installed manually over this Mac's 1.1.8 app, with the prior app backed up; native post-install version, dictionary and manual-check behavior passed as described above.
 - Actual desktop swipes, full-screen transitions and native ChatGPT insertion remain unverified; the synthetic/native fixture results above do not imply those paths passed.
 - Hosted-service deployment and real speech through that gateway are deferred work for a later hosted release. They are not dependencies of the explicitly personal bundle.
 - A complete production DMG update/relaunch remains unverified. Both disposable updater runs are separate evidence; final public discovery and download verification do not by themselves establish an existing user's installed upgrade.
