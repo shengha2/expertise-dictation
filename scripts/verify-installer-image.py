@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect a real DMG read-only, without Finder UI, signing or notarization claims.
+"""Inspect a real DMG read-only, including strict application signature integrity.
 
 Uses the already installed, pinned packaging venv. No packages are downloaded.
 The image is mounted privately at a unique temporary path and always detached.
@@ -131,6 +131,10 @@ def inspect_mount(volume, temporary, report, expected_version):
     check(report, "Application version matches the requested release", isinstance(version, str)
           and re.fullmatch(r"\d+(?:\.\d+)+", version) is not None and version == expected_version)
     check(report, "Application executable is present", regular(app / "Contents/MacOS/FnDictate"))
+    signature = subprocess.run(["/usr/bin/codesign", "--verify", "--deep", "--strict",
+                                "--all-architectures", str(app)], capture_output=True)
+    check(report, "Mounted application's strict code signature is intact after installer decoration",
+          signature.returncode == 0)
     report["application"] = {"name": APP_NAME, "bundleIdentifier": info["CFBundleIdentifier"], "version": version}
     shortcut = volume / "Applications"
     check(report, "Applications shortcut targets /Applications", shortcut.is_symlink() and os.readlink(shortcut) == "/Applications")
@@ -216,7 +220,7 @@ def main():
     if args.output and args.output.resolve() == args.dmg.resolve():
         parser.error("JSON output must not overwrite the disk image")
     report = {"schemaVersion": 1, "artifact": args.dmg.name, "success": False, "checks": [],
-              "scope": "Read-only DMG contents and Finder metadata validation; no signing, notarization, installation, or visual Finder appearance claim.",
+              "scope": "Read-only DMG contents, Finder metadata and strict application signature integrity validation; no signer identity, notarization, installation, or visual Finder appearance claim.",
               "microphoneUsed": False, "userPreferencesChanged": False, "networkUsed": False}
     temporary = None
     mount = None

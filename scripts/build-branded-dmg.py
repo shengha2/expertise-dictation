@@ -31,7 +31,9 @@ settings = {
     "icon_size": 92, "text_size": 14, "label_pos": "bottom",
     "icon_locations": {"Expertise Typer.app": (220, 220), "Applications": (500, 220),
                        "Guide and licenses": (360, 432)},
-    "hide_extensions": ["Expertise Typer.app"],
+    # Hiding an extension writes FinderInfo on the signed app bundle. Sparkle's
+    # strict code-signature verification rejects that extra metadata.
+    "hide_extensions": [],
     "arrange_by": None,
 }
 
@@ -85,6 +87,10 @@ with tempfile.TemporaryDirectory(prefix="expertise-native-bookmark-") as tempora
         with DSStore.open(str(volume / ".DS_Store"), "r") as store:
             portable.write_bytes(store["."]["pBBk"].to_bytes())
         subprocess.run([str(helper), "validate", str(portable), str(background)], check=True)
+        # Installer decoration must never alter the signed application. Verify
+        # after dmgbuild has applied all Finder attributes and layout metadata.
+        subprocess.run(["/usr/bin/codesign", "--verify", "--deep", "--strict",
+                        "--all-architectures", str(volume / "Expertise Typer.app")], check=True)
         validated.append(True)
 
     settings["create_hook"] = remember_mount
